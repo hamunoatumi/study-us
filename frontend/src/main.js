@@ -11,5 +11,21 @@ document.querySelector('#app').innerHTML = `
 document
   .querySelector('#open-pip')
   .addEventListener('click', async () => {
-    await openSubWindow()
+    await openSubWindow(praticipants)
   })
+
+  // 人数のモックデータ
+  const praticipants = [
+    {
+      id: 'user-1',
+      name: 'A'
+    },
+    {
+      id: 'user-2',
+      name: 'B'
+    },
+    {
+      id: 'user-3',
+      name: 'C'
+    }
+  ]
