@@ -1,7 +1,13 @@
 let pipWindow = null;
 
 export async function openSubWindow(participants) {
+    if (pipWindow) return; 
     pipWindow = await documentPictureInPicture.requestWindow({ width: 400, height: 250});
+
+    // PiPウィンドウが閉じられたときにnullにする
+    pipWindow.addEventListener('pagehide', () => {
+      pipWindow = null;
+    })
 
     copyStylesToPip()       // tailwindcssをpipに適応
 
@@ -57,6 +63,13 @@ function renderParticipants(participants) {
         `
     }).join('')
     sannkasyayouso.innerHTML = participantHtml;
+}
+
+// PiPウィンドウの終了(ホーム画面のためのもの)
+export function closeSubWindow() {
+  if(!pipWindow) return;
+  pipWindow.close();
+  pipWindow = null;
 }
 
 // サブウィンドウのスタイルをコピーする関数
