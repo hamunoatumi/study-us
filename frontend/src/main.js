@@ -1,21 +1,8 @@
 import './style.css'
-import { openSubWindow } from './subwindow.js'
+import { openSubWindow, updateParticipants } from './subwindow.js'
 
-document.querySelector('#app').innerHTML = `
-  <main>
-    <h1>StudyUs</h1>
-    <button id="open-pip">サブウィンドウを開く</button>
-  </main>
-`
-
-document
-  .querySelector('#open-pip')
-  .addEventListener('click', async () => {
-    await openSubWindow(praticipants)
-  })
-
-  // 人数のモックデータ
-  const praticipants = [
+// 人数のモックデータ
+  let participants = [
     {
       id: 'user-1',
       name: 'A',
@@ -32,3 +19,23 @@ document
       status: 'away'
     }
   ]
+
+document.querySelector('#app').innerHTML = `
+  <main>
+    <h1>StudyUs</h1>
+    <button id="open-pip">サブウィンドウを開く</button>
+    <button id="update-pip">サブウィンドウを更新</button>
+  </main>
+`
+// PiPウィンドウの作成
+document
+  .querySelector('#open-pip')
+  .addEventListener('click', async () => {
+    await openSubWindow(participants)
+  })
+
+// サブウィンドウの更新(現在は1人目の参加者をサボりにするだけ)
+document.querySelector('#update-pip').addEventListener('click', () => {
+  participants[0].status = 'distracted'
+  updateParticipants(participants)
+})

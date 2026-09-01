@@ -14,6 +14,13 @@ export async function openSubWindow(participants) {
     renderParticipants(participants)
 }
 
+// 
+export function updateParticipants(participants) {
+  if(!pipWindow) return;
+  renderParticipants(participants);
+}
+
+
 // サブウィンドウに参加者を表示する
 function renderParticipants(participants) {
     // サブウィンドウのDOM要素を取得
