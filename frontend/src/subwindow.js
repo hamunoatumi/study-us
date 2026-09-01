@@ -14,7 +14,7 @@ export async function openSubWindow(participants) {
     renderParticipants(participants)
 }
 
-// サブウィンドウに参加者を表示する関数
+// サブウィンドウに参加者を表示する
 function renderParticipants(participants) {
     // サブウィンドウのDOM要素を取得
     const sannkasyayouso = pipWindow.document.querySelector('#participants');
@@ -22,7 +22,7 @@ function renderParticipants(participants) {
     // 参加人数に応じた画面分割
     let gridClass;
 
-    if(participants.length <= 2){
+    if(participants.length === 1){
       gridClass = 'grid-cols-1'
     } else if(participants.length <= 4){
       gridClass = 'grid-cols-2'
@@ -31,6 +31,13 @@ function renderParticipants(participants) {
     }
 
     sannkasyayouso.className = `grid ${gridClass} h-screen`; 
+
+    // 参加者の状態(status)
+    const statusComment = {
+        studying: '勉強なう',
+        distracted: 'サボりなう',
+        away: '離席中'
+    }
     
     // 参加者のHTMLを生成してサブウィンドウに挿入
     const participantHtml = participants.map((participant) => {
@@ -38,6 +45,7 @@ function renderParticipants(participants) {
         <div class="participant flex flex-col items-center justify-center">
             <div class="avatar text-4xl">👤</div>
             <div class="name">${participant.name}</div>
+            <div class="status">${statusComment[participant.status]}</div>
         </div>
         `
     }).join('')

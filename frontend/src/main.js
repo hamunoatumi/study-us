@@ -18,14 +18,17 @@ document
   const praticipants = [
     {
       id: 'user-1',
-      name: 'A'
+      name: 'A',
+      status: 'studying'
     },
     {
       id: 'user-2',
-      name: 'B'
+      name: 'B',
+      status: 'distracted'
     },
     {
       id: 'user-3',
-      name: 'C'
+      name: 'C',
+      status: 'away'
     }
   ]
