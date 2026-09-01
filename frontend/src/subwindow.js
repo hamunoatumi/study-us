@@ -14,7 +14,7 @@ export async function openSubWindow(participants) {
     renderParticipants(participants)
 }
 
-// 
+// サブウィンドウの更新
 export function updateParticipants(participants) {
   if(!pipWindow) return;
   renderParticipants(participants);
