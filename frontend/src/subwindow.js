@@ -1,8 +1,22 @@
 let pipWindow = null;
 
+// 参加者の状態(status)
+    const STATUS_LABELS = {
+        studying: '勉強なう',
+        distracted: 'サボりなう',
+        away: '離席中'
+    }
+
 export async function openSubWindow(participants) {
-    if (pipWindow) return; 
-    pipWindow = await documentPictureInPicture.requestWindow({ width: 400, height: 250});
+    if (pipWindow && !pipWindow.closed) return; 
+
+    try {
+      pipWindow = await documentPictureInPicture.requestWindow({ width: 400, height: 250});
+    }catch (error) {
+      console.error('PiPウィンドウの起動に失敗しました:', error);
+      pipWindow = null;
+      return;
+    }
 
     // PiPウィンドウが閉じられたときにnullにする
     pipWindow.addEventListener('pagehide', () => {
@@ -22,7 +36,7 @@ export async function openSubWindow(participants) {
 
 // サブウィンドウの更新
 export function updateParticipants(participants) {
-  if(!pipWindow) return;
+  if(!pipWindow || pipWindow.closed) return;
   renderParticipants(participants);
 }
 
@@ -44,25 +58,38 @@ function renderParticipants(participants) {
     }
 
     sannkasyayouso.className = `grid ${gridClass} h-screen`; 
-
-    // 参加者の状態(status)
-    const statusComment = {
-        studying: '勉強なう',
-        distracted: 'サボりなう',
-        away: '離席中'
-    }
     
-    // 参加者のHTMLを生成してサブウィンドウに挿入
-    const participantHtml = participants.map((participant) => {
-        return `
-        <div class="participant flex flex-col items-center justify-center">
-            <div class="avatar text-4xl">👤</div>
-            <div class="name">${participant.name}</div>
-            <div class="status">${statusComment[participant.status]}</div>
-        </div>
-        `
-    }).join('')
-    sannkasyayouso.innerHTML = participantHtml;
+    sannkasyayouso.innerHTML = '';
+
+    //1人ずつ表示
+    for(const participant of participants){
+      // 参加者全体
+      const participantElement = pipWindow.document.createElement('div');
+      participantElement.className = 'participant flex flex-col items-center justify-center';
+
+      // アバター
+      const avatarElement = pipWindow.document.createElement('div');
+      avatarElement.className = 'avatar text-4xl';
+      avatarElement.textContent = '👤';
+
+      // 名前
+      const nameElement = pipWindow.document.createElement('div');
+      nameElement.className = 'name text-lg font-bold';
+      nameElement.textContent = participant.name;
+
+      // ステータス
+      const statusElement = pipWindow.document.createElement('div');
+      statusElement.className = 'status';
+      statusElement.textContent = STATUS_LABELS[participant.status] ?? 'statusがおかしい';
+
+      // participantの中に入れる
+      participantElement.appendChild(avatarElement);
+      participantElement.appendChild(nameElement);
+      participantElement.appendChild(statusElement);
+
+      // サブウィンドウの参加者要素に追加
+      sannkasyayouso.appendChild(participantElement);
+    }
 }
 
 // PiPウィンドウの終了(ホーム画面のためのもの)
