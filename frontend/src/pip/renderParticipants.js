@@ -8,6 +8,11 @@ export function renderParticipants(participants, pipWindow) {
     // 参加人数に応じた画面分割
     let gridClass;
 
+    if(participants.length === 0){
+        sannkasyayouso.innerHTML = '<p class="text-center text-gray-500">参加者がいません</p>';
+        return;
+    }
+
     if(participants.length === 1){
       gridClass = 'grid-cols-1'
     } else if(participants.length <= 4){

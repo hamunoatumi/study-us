@@ -6,6 +6,11 @@ let pipWindow = null;
 export async function openSubWindow(participants) {
     if (pipWindow && !pipWindow.closed) return; 
 
+    if(!('documentPictureInPicture' in window)) {
+      console.error('PiP APIがサポートされていません');
+      return;
+    }
+
     try {
       pipWindow = await documentPictureInPicture.requestWindow({ width: 400, height: 250});
     }catch (error) {
@@ -40,7 +45,6 @@ export function updateParticipants(participants) {
 export function closeSubWindow() {
   if(!pipWindow) return;
   pipWindow.close();
-  pipWindow = null;
 }
 
 // サブウィンドウのスタイルをコピーする関数
