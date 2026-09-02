@@ -1,5 +1,5 @@
 import './style.css'
-import { openSubWindow, updateParticipants } from './subwindow.js'
+import { openSubWindow, updateParticipants } from './pip/subwindow.js'
 
 // 人数のモックデータ
   let participants = [
