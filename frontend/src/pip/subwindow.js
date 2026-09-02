@@ -27,12 +27,34 @@ export async function openSubWindow(participants) {
     copyStylesToPip()       // tailwindcssをpipに適応
 
     pipWindow.document.body.innerHTML = `
-    <main class="pip-container">
-        <div id="participants"></div>
-    </main>
-    `
+    <main class="flex h-screen flex-col overflow-hidden bg-[#F5F5F7] text-gray-900">
+    
+    <header
+      class="
+        flex h-11 shrink-0
+        items-center justify-between
+        border-b border-black/5
+        bg-white
+        px-4">
+      <h1 class="text-[15px] font-semibold tracking-tight">
+        StudyUs
+      </h1>
 
-    renderParticipants(participants, pipWindow)
+      <span
+        id="participant-count"
+        class="text-xs text-gray-400">
+      </span>
+    </header>
+
+    <section
+      id="participants"
+      class="min-h-0 flex-1 p-3">
+    </section>
+
+  </main>
+`
+
+    renderParticipants(participants, pipWindow);
 }
 
 // サブウィンドウの更新
