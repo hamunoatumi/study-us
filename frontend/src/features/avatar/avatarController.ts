@@ -4,6 +4,7 @@ import {
   type AvatarRendererOptions,
 } from './renderer'
 import { neutralPose, type PoseProvider } from './types'
+import { createFaceTracker, type FaceTrackerOptions } from './faceTracker'
 
 export type AvatarControllerOptions = {
   video: HTMLVideoElement
@@ -18,6 +19,17 @@ export type AvatarController = {
   start: () => Promise<void>
   stop: () => void
   resize: () => void
+}
+
+export type FaceTrackedAvatarControllerOptions = Omit<
+  AvatarControllerOptions,
+  'poseProvider'
+> & {
+  faceTracker?: FaceTrackerOptions
+}
+
+export type FaceTrackedAvatarController = AvatarController & {
+  destroy: () => void
 }
 
 export function createAvatarController(
@@ -75,5 +87,23 @@ export function createAvatarController(
     },
     stop,
     resize: renderer.resize,
+  }
+}
+
+export async function createFaceTrackedAvatarController(
+  options: FaceTrackedAvatarControllerOptions,
+): Promise<FaceTrackedAvatarController> {
+  const faceTracker = await createFaceTracker(options.faceTracker)
+  const controller = createAvatarController({
+    ...options,
+    poseProvider: faceTracker.detect,
+  })
+
+  return {
+    ...controller,
+    destroy: () => {
+      controller.stop()
+      faceTracker.destroy()
+    },
   }
 }
