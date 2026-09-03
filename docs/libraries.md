@@ -83,3 +83,33 @@ URLは`createFaceTracker()`のオプションで差し替えられる。VPSか�
 MediaPipe固有処理は`faceTracker.ts`へ閉じ込める。別の顔検出ライブラリへ
 置き換える場合も、`PoseProvider`として`AvatarPose`を返せば、カメラ処理、
 Canvas描画、画面側の呼び出し方は変更しない。
+
+## 検討中の描画ライブラリ
+
+以下は比較対象であり、現時点ではインストールも採用決定もしていない。
+方式ごとの詳細は[アバター描画方式の比較](./avatar-rendering-options.md)を参照する。
+
+### PixiJS
+
+- 状態: 未導入
+- 想定用途: PNG/SVGパーツを使った複数アバターの高速描画
+- 公式サイト: https://pixijs.com/
+- 確認事項: 採用バージョン、バンドルサイズ、WebGLの同時描画性能、ライセンス
+
+### Rive
+
+- 状態: 未導入
+- 想定用途: `.riv`で作成したベクターアバターとState Machineの再生
+- 公式Webランタイム: https://rive.app/docs/runtimes/web/web-js
+- 確認事項: 採用ランタイム、WASMサイズ、素材制作フロー、ランタイムと素材のライセンス
+
+### Live2D Cubism SDK for Web
+
+- 状態: 未導入
+- 想定用途: パーツ分け・モデリング済みキャラクターの本格的な表情追従
+- 公式マニュアル: https://docs.live2d.com/en/cubism-sdk-manual/cubism-sdk-for-web/
+- ライセンス案内: https://www.live2d.com/en/sdk/about/
+- 確認事項: StudyUsの配布形態に対する公開ライセンス、モデル利用権、制作工数、性能
+
+検討中のライブラリを実際に導入する場合は、バージョンを固定してこのファイルに
+採用理由、利用箇所、データの扱い、ライセンス、更新手順を追記する。
