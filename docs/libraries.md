@@ -47,6 +47,7 @@ controller.destroy()
 | 左右の目のランドマーク | `rotation` | 顔の傾き |
 | `eyeBlinkLeft` | `eyeOpenLeft` | 左目の開き |
 | `eyeBlinkRight` | `eyeOpenRight` | 右目の開き |
+| 左右の虹彩中心（468、473番） | `eyeX`, `eyeY` | 顔の向きと独立した視線移動 |
 | `jawOpen` | `mouthOpen` | Canvas版の口の開き（勉強中SVG版では未使用） |
 
 値は描画前に`0`から`1`、または`-1`から`1`へ制限する。

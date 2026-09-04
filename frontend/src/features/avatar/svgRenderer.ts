@@ -34,11 +34,11 @@ export function createSvgAvatarRenderer(svg: SVGSVGElement, options: SvgAvatarRe
         <path d="M164 302c10 24 62 24 72 0v-51h-72z" fill="url(#${id}-skin)"/>
       </g>
       <g data-part="head" transform-origin="200px 196px" filter="url(#${id}-head-shadow)">
-        <path d="M105 201C96 102 132 39 200 39s104 63 95 162l-25 5v-57c0-54-28-86-70-86s-70 32-70 86v57z" fill="url(#${id}-hair)"/>
+        <path d="M105 201C96 102 132 39 200 39s104 63 95 162l-25 5v-57c0-54-28-86-70-86s-70 32-70 86v57z" fill="url(#${id}-hair)" transform="translate(0 10)"/>
         <circle cx="108" cy="197" r="20" fill="url(#${id}-skin)"/><circle cx="292" cy="197" r="20" fill="url(#${id}-skin)"/>
         <rect x="116" y="83" width="168" height="211" rx="84" fill="url(#${id}-skin)"/>
-        <path d="M112 164c0-82 35-125 91-125 51 0 85 36 90 105-24-10-44-32-56-62-17 35-59 64-125 82z" fill="url(#${id}-hair)"/>
-        <path d="M133 111c24-35 55-53 91-54" fill="none" stroke="#9294aa" stroke-width="12" stroke-linecap="round" opacity=".2"/>
+        <path d="M112 164c0-82 35-125 91-125 51 0 85 36 90 105-24-10-44-32-56-62-17 35-59 64-125 82z" fill="url(#${id}-hair)" transform="translate(0 10)"/>
+        <path d="M133 111c24-35 55-53 91-54" fill="none" stroke="#9294aa" stroke-width="12" stroke-linecap="round" opacity=".2" transform="translate(0 10)"/>
         <g data-part="face-features">
         <g fill="none" stroke="${color.outlineColor}" stroke-width="6" stroke-linecap="round"><path d="M143 171q19-10 36 0"/><path d="M221 171q17-10 36 0"/></g>
         <g data-part="eye-left" transform-origin="160px 199px"><rect x="137" y="184" width="47" height="30" rx="15" fill="#fff"/><g data-part="pupil-left"><circle cx="161" cy="199" r="10" fill="#6577df"/><circle cx="161" cy="200" r="5" fill="#282a40"/><circle cx="157" cy="195" r="3" fill="#fff"/></g></g>
@@ -69,7 +69,7 @@ export function createSvgAvatarRenderer(svg: SVGSVGElement, options: SvgAvatarRe
       const downEyeScale = 1 - lookingDown * .42
       leftEye.style.transform = `scaleY(${Math.max(.08, clamp(pose.eyeOpenLeft, 0, 1) * downEyeScale)})`
       rightEye.style.transform = `scaleY(${Math.max(.08, clamp(pose.eyeOpenRight, 0, 1) * downEyeScale)})`
-      leftPupil.style.transform = rightPupil.style.transform = `translate(${x * 5}px, ${y * 8}px)`
+      leftPupil.style.transform = rightPupil.style.transform = `translate(${clamp(pose.eyeX, -1, 1) * 7}px, ${clamp(pose.eyeY, -1, 1) * 5 + y * 4}px)`
     },
     destroy: () => svg.replaceChildren(),
   }

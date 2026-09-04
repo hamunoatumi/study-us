@@ -32,6 +32,24 @@ function blendshapeScore(categories: Category[], name: string): number {
   return categories.find(category => category.categoryName === name)?.score ?? 0
 }
 
+function normalizedIrisPosition(
+  iris: NormalizedLandmark,
+  cornerA: NormalizedLandmark,
+  cornerB: NormalizedLandmark,
+  upperLid: NormalizedLandmark,
+  lowerLid: NormalizedLandmark,
+): { x: number; y: number } {
+  const eyeCenterX = (cornerA.x + cornerB.x) / 2
+  const eyeCenterY = (upperLid.y + lowerLid.y) / 2
+  const eyeWidth = Math.max(Math.abs(cornerA.x - cornerB.x), 0.001)
+  const eyeHeight = Math.max(Math.abs(upperLid.y - lowerLid.y), 0.001)
+
+  return {
+    x: clamp(((iris.x - eyeCenterX) / eyeWidth) * 3, -1, 1),
+    y: clamp(((iris.y - eyeCenterY) / eyeHeight) * 1.5, -1, 1),
+  }
+}
+
 function poseFromDetection(
   landmarks: NormalizedLandmark[],
   blendshapes: Category[],
@@ -39,11 +57,29 @@ function poseFromDetection(
   const nose = landmarks[1]
   const leftEyeOuter = landmarks[33]
   const rightEyeOuter = landmarks[263]
-  if (!nose || !leftEyeOuter || !rightEyeOuter) return null
+  const leftIris = landmarks[468]
+  const rightIris = landmarks[473]
+  const leftEyeInner = landmarks[133]
+  const rightEyeInner = landmarks[362]
+  const leftUpperLid = landmarks[159]
+  const leftLowerLid = landmarks[145]
+  const rightUpperLid = landmarks[386]
+  const rightLowerLid = landmarks[374]
+  if (
+    !nose || !leftEyeOuter || !rightEyeOuter || !leftIris || !rightIris ||
+    !leftEyeInner || !rightEyeInner || !leftUpperLid || !leftLowerLid ||
+    !rightUpperLid || !rightLowerLid
+  ) return null
 
   const roll = Math.atan2(
     rightEyeOuter.y - leftEyeOuter.y,
     rightEyeOuter.x - leftEyeOuter.x,
+  )
+  const leftGaze = normalizedIrisPosition(
+    leftIris, leftEyeOuter, leftEyeInner, leftUpperLid, leftLowerLid,
+  )
+  const rightGaze = normalizedIrisPosition(
+    rightIris, rightEyeInner, rightEyeOuter, rightUpperLid, rightLowerLid,
   )
 
   return {
@@ -54,6 +90,8 @@ function poseFromDetection(
     eyeOpenLeft: 1 - clamp(blendshapeScore(blendshapes, 'eyeBlinkLeft'), 0, 1),
     eyeOpenRight:
       1 - clamp(blendshapeScore(blendshapes, 'eyeBlinkRight'), 0, 1),
+    eyeX: (leftGaze.x + rightGaze.x) / 2,
+    eyeY: (leftGaze.y + rightGaze.y) / 2,
     mouthOpen: clamp(blendshapeScore(blendshapes, 'jawOpen'), 0, 1),
   }
 }
@@ -75,6 +113,8 @@ function smoothPose(
       previous.eyeOpenLeft * previousWeight + current.eyeOpenLeft * currentWeight,
     eyeOpenRight:
       previous.eyeOpenRight * previousWeight + current.eyeOpenRight * currentWeight,
+    eyeX: previous.eyeX * previousWeight + current.eyeX * currentWeight,
+    eyeY: previous.eyeY * previousWeight + current.eyeY * currentWeight,
     mouthOpen:
       previous.mouthOpen * previousWeight + current.mouthOpen * currentWeight,
   }
