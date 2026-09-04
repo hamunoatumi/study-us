@@ -14,5 +14,15 @@ export { createFaceTracker } from './faceTracker'
 export type { FaceTracker, FaceTrackerOptions } from './faceTracker'
 export { createAvatarRenderer } from './renderer'
 export type { AvatarRenderer, AvatarRendererOptions } from './renderer'
+export { createSvgAvatarRenderer } from './svgRenderer'
+export type {
+  SvgAvatarRenderer,
+  SvgAvatarRendererOptions,
+} from './svgRenderer'
+export { createFaceTrackedSvgAvatarController } from './svgAvatarController'
+export type {
+  FaceTrackedSvgAvatarController,
+  FaceTrackedSvgAvatarControllerOptions,
+} from './svgAvatarController'
 export { neutralPose } from './types'
 export type { AvatarAppearance, AvatarPose, PoseProvider } from './types'

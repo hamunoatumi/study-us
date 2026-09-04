@@ -1,0 +1,24 @@
+<!doctype html>
+<html lang="ja">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>studyUs アバタープレビュー</title>
+    <script type="module" src="/src/avatar-preview.ts"></script>
+  </head>
+  <body>
+    <main class="preview-shell">
+      <section class="preview-copy">
+        <span class="eyebrow">STUDYUS AVATAR LAB</span>
+        <h1>気配が伝わる、<br />ちょうどいいアバター。</h1>
+        <p>カメラ映像は端末内で顔の動きに変換されます。映像そのものはアバター画面に表示しません。</p>
+        <button id="start-camera" type="button">カメラで動かす</button>
+        <p id="camera-status" class="camera-status">現在はニュートラル表示です</p>
+      </section>
+      <section class="avatar-stage" aria-label="アバタープレビュー">
+        <svg id="avatar" class="avatar"></svg>
+        <video id="camera" muted playsinline></video>
+      </section>
+    </main>
+  </body>
+</html>

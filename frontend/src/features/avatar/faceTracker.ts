@@ -47,7 +47,8 @@ function poseFromDetection(
   )
 
   return {
-    faceX: clamp((0.5 - nose.x) * 2, -1, 1),
+    // カメラ映像は鏡表示されるため、画面上の移動方向と一致させる。
+    faceX: clamp((nose.x - 0.5) * 2, -1, 1),
     faceY: clamp((nose.y - 0.5) * 2, -1, 1),
     rotation: clamp(roll / 0.35, -1, 1),
     eyeOpenLeft: 1 - clamp(blendshapeScore(blendshapes, 'eyeBlinkLeft'), 0, 1),
