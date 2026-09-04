@@ -53,6 +53,7 @@ function normalizedIrisPosition(
 function poseFromDetection(
   landmarks: NormalizedLandmark[],
   blendshapes: Category[],
+  transformationMatrix: number[],
 ): AvatarPose | null {
   const nose = landmarks[1]
   const leftEyeOuter = landmarks[33]
@@ -81,16 +82,29 @@ function poseFromDetection(
   const rightGaze = normalizedIrisPosition(
     rightIris, rightEyeInner, rightEyeOuter, rightUpperLid, rightLowerLid,
   )
+  const pitchRadians = Math.atan2(
+    transformationMatrix[6] ?? 0,
+    transformationMatrix[10] ?? 1,
+  )
+  const yawRadians = Math.atan2(
+    transformationMatrix[2] ?? 0,
+    Math.hypot(
+      transformationMatrix[6] ?? 0,
+      transformationMatrix[10] ?? 1,
+    ),
+  )
 
   return {
     // カメラ映像は鏡表示されるため、画面上の移動方向と一致させる。
     faceX: clamp((nose.x - 0.5) * 2, -1, 1),
     faceY: clamp((nose.y - 0.5) * 2, -1, 1),
+    headYaw: clamp(yawRadians / 0.55, -1, 1),
+    headPitch: clamp(pitchRadians / 0.45, -1, 1),
     rotation: clamp(roll / 0.35, -1, 1),
     eyeOpenLeft: 1 - clamp(blendshapeScore(blendshapes, 'eyeBlinkLeft'), 0, 1),
     eyeOpenRight:
       1 - clamp(blendshapeScore(blendshapes, 'eyeBlinkRight'), 0, 1),
-    eyeX: (leftGaze.x + rightGaze.x) / 2,
+    eyeX: -(leftGaze.x + rightGaze.x) / 2,
     eyeY: (leftGaze.y + rightGaze.y) / 2,
     mouthOpen: clamp(blendshapeScore(blendshapes, 'jawOpen'), 0, 1),
   }
@@ -107,6 +121,10 @@ function smoothPose(
   return {
     faceX: previous.faceX * previousWeight + current.faceX * currentWeight,
     faceY: previous.faceY * previousWeight + current.faceY * currentWeight,
+    headYaw:
+      previous.headYaw * previousWeight + current.headYaw * currentWeight,
+    headPitch:
+      previous.headPitch * previousWeight + current.headPitch * currentWeight,
     rotation:
       previous.rotation * previousWeight + current.rotation * currentWeight,
     eyeOpenLeft:
@@ -137,6 +155,7 @@ export async function createFaceTracker(
     minFacePresenceConfidence: options.minPresenceConfidence ?? 0.5,
     minTrackingConfidence: options.minTrackingConfidence ?? 0.5,
     outputFaceBlendshapes: true,
+    outputFacialTransformationMatrixes: true,
   })
 
   let previousPose = neutralPose
@@ -156,7 +175,13 @@ export async function createFaceTracker(
       if (!landmarks) return null
 
       const blendshapes = result.faceBlendshapes[0]?.categories ?? []
-      const detectedPose = poseFromDetection(landmarks, blendshapes)
+      const transformationMatrix =
+        result.facialTransformationMatrixes[0]?.data ?? []
+      const detectedPose = poseFromDetection(
+        landmarks,
+        blendshapes,
+        transformationMatrix,
+      )
       if (!detectedPose) return null
 
       previousPose = smoothPose(

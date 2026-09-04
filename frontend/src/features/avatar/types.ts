@@ -1,6 +1,8 @@
 export type AvatarPose = {
   faceX: number
   faceY: number
+  headYaw: number
+  headPitch: number
   rotation: number
   eyeOpenLeft: number
   eyeOpenRight: number
@@ -23,6 +25,8 @@ export type PoseProvider = (
 export const neutralPose: AvatarPose = {
   faceX: 0,
   faceY: 0,
+  headYaw: 0,
+  headPitch: 0,
   rotation: 0,
   eyeOpenLeft: 1,
   eyeOpenRight: 1,

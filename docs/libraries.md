@@ -44,6 +44,7 @@ controller.destroy()
 | MediaPipeの出力 | StudyUsの値 | 用途 |
 | --- | --- | --- |
 | 鼻のランドマーク | `faceX`, `faceY` | アバターの顔位置 |
+| 顔変換行列 | `headYaw`, `headPitch` | 顔の画面内位置と独立した左右・上下角度 |
 | 左右の目のランドマーク | `rotation` | 顔の傾き |
 | `eyeBlinkLeft` | `eyeOpenLeft` | 左目の開き |
 | `eyeBlinkRight` | `eyeOpenRight` | 右目の開き |
