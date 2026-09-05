@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 440">
+  <symbol id="HAIR_ID-back" viewBox="0 0 400 440"></symbol>
+  <symbol id="HAIR_ID-crown" viewBox="0 0 400 440"></symbol>
+  <symbol id="HAIR_ID-foreground" viewBox="0 0 400 440">
+    <path d="M271 60l-27-13 2-4-17-2 2-4-20 1-7-5-22 6-2-5-27 14-3-4-10 12-6-6v11l-11 3 3 3-12 10 3 2-8 12-2 12 5 37 18 31-1-20 19-48 27-11 20 1v-4l3 4 29-1 24 14 14 35 3 27 15-24 6-36-13-31 3-3-13-10z"/>
+    <g fill="none" stroke="#fff" stroke-linecap="round" stroke-width="3.2" opacity=".16">
+      <path d="M134 83q22-25 50-36"/><path d="M164 75q22-23 48-30"/>
+      <path d="M196 68q24-18 49-18"/><path d="M221 81q21-12 41-7"/>
+      <path d="M151 105q24-17 51-20"/><path d="M213 92q23-6 43 3"/>
+    </g>
+    <g fill="none" stroke="#171923" stroke-linecap="round" stroke-width="2.2" opacity=".2">
+      <path d="M151 61q11 10 16 23"/><path d="M179 45q10 13 13 28"/>
+      <path d="M211 43q-2 15 1 28"/><path d="M241 50q-11 13-17 27"/>
+    </g>
+  </symbol>
+</svg>
