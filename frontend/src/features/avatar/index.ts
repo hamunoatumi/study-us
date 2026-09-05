@@ -16,9 +16,12 @@ export { createAvatarRenderer } from './renderer'
 export type { AvatarRenderer, AvatarRendererOptions } from './renderer'
 export { createSvgAvatarRenderer } from './svgRenderer'
 export type {
+  AvatarHairStyle,
   SvgAvatarRenderer,
   SvgAvatarRendererOptions,
 } from './svgRenderer'
+export { avatarPresets } from './avatarPresets'
+export type { AvatarPreset } from './avatarPresets'
 export { createFaceTrackedSvgAvatarController } from './svgAvatarController'
 export type {
   FaceTrackedSvgAvatarController,

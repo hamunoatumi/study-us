@@ -10,13 +10,12 @@
     <main class="preview-shell">
       <section class="preview-copy">
         <span class="eyebrow">STUDYUS AVATAR LAB</span>
-        <h1>気配が伝わる、<br />ちょうどいいアバター。</h1>
-        <p>カメラ映像は端末内で顔の動きに変換されます。映像そのものはアバター画面に表示しません。</p>
-        <button id="start-camera" type="button">カメラで動かす</button>
+        <h1>あなたらしい<br />アバターを選ぼう。</h1>
+        <p>今どきの男子高校生を意識した4種類を、同じカメラ入力で比較できます。</p>
+        <button id="start-camera" type="button">全員をカメラで動かす</button>
         <p id="camera-status" class="camera-status">現在はニュートラル表示です</p>
       </section>
-      <section class="avatar-stage" aria-label="アバタープレビュー">
-        <svg id="avatar" class="avatar"></svg>
+      <section id="avatar-gallery" class="avatar-gallery" aria-label="アバター一覧">
         <video id="camera" muted playsinline></video>
       </section>
     </main>
