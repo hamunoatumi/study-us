@@ -29,9 +29,13 @@ type Session = {
   lastHeartbeatAt: number
   lastClientSeq: number
   nextServerSeq: number
+  lastPoseBroadcastAt: number
+  pendingPose: AvatarPosePayload | null
+  poseBroadcastTimer: NodeJS.Timeout | null
 }
 
 const OPEN = WebSocket.OPEN
+const POSE_BROADCAST_INTERVAL_MS = 1_000 / 15
 
 export class StudyUsRoomServer {
   readonly #webSocketServer: WebSocketServer
@@ -70,6 +74,9 @@ export class StudyUsRoomServer {
       lastHeartbeatAt: Date.now(),
       lastClientSeq: -1,
       nextServerSeq: 0,
+      lastPoseBroadcastAt: 0,
+      pendingPose: null,
+      poseBroadcastTimer: null,
     }
 
     this.#sessions.set(socket, session)
@@ -132,12 +139,7 @@ export class StudyUsRoomServer {
         this.#updateStatus(session)
         break
       case 'avatar.pose':
-        session.pose = message.payload
-        this.#broadcast(
-          'participant.pose',
-          { userId: session.userId, pose: message.payload },
-          session,
-        )
+        this.#queuePoseBroadcast(session, message.payload)
         break
       case 'avatar.tracking':
         session.faceDetected = message.payload.faceDetected
@@ -145,6 +147,10 @@ export class StudyUsRoomServer {
         break
       case 'heartbeat':
         this.#updateStatus(session)
+        break
+      case 'room.leave':
+        this.#leave(session)
+        session.socket.close(1000, '退出しました')
         break
     }
   }
@@ -190,14 +196,47 @@ export class StudyUsRoomServer {
 
   #removeSession(session: Session): void {
     this.#sessions.delete(session.socket)
+    this.#leave(session)
+  }
+
+  #leave(session: Session): void {
     if (!session.joined) return
 
+    session.joined = false
+    session.pendingPose = null
+    if (session.poseBroadcastTimer !== null) {
+      clearTimeout(session.poseBroadcastTimer)
+      session.poseBroadcastTimer = null
+    }
     this.#participants.delete(session)
     this.#broadcast(
       'participant.left',
       { userId: session.userId },
       session,
     )
+  }
+
+  #queuePoseBroadcast(session: Session, pose: AvatarPosePayload): void {
+    session.pose = pose
+    session.pendingPose = pose
+
+    if (session.poseBroadcastTimer !== null) return
+
+    const elapsed = Date.now() - session.lastPoseBroadcastAt
+    const delayMs = Math.max(0, Math.ceil(POSE_BROADCAST_INTERVAL_MS - elapsed))
+    session.poseBroadcastTimer = setTimeout(() => {
+      session.poseBroadcastTimer = null
+      const pendingPose = session.pendingPose
+      session.pendingPose = null
+      if (!session.joined || pendingPose === null) return
+
+      session.lastPoseBroadcastAt = Date.now()
+      this.#broadcast(
+        'participant.pose',
+        { userId: session.userId, pose: pendingPose },
+        session,
+      )
+    }, delayMs)
   }
 
   #snapshot(session: Session): ParticipantSnapshot {
@@ -232,10 +271,16 @@ export class StudyUsRoomServer {
   #markInactiveUsersAway(): void {
     const now = Date.now()
     for (const session of this.#sessions.values()) {
+      const elapsed = now - session.lastHeartbeatAt
+      if (session.joined && elapsed > this.#config.disconnectTimeoutMs) {
+        session.socket.terminate()
+        continue
+      }
+
       if (
         session.joined &&
         session.status !== 'away' &&
-        now - session.lastHeartbeatAt > this.#config.heartbeatTimeoutMs
+        elapsed > this.#config.heartbeatTimeoutMs
       ) {
         session.status = 'away'
         this.#broadcast('participant.status', {

@@ -3,6 +3,7 @@ export type ServerConfig = {
   websocketPath: string
   bannedHostnames: ReadonlySet<string>
   heartbeatTimeoutMs: number
+  disconnectTimeoutMs: number
   maxParticipants: number
 }
 
@@ -36,14 +37,23 @@ export const loadServerConfig = (
     environment.MAX_PARTICIPANTS,
     100,
   )
+  const heartbeatTimeoutMs = parsePositiveInteger(
+    environment.HEARTBEAT_TIMEOUT_MS,
+    30_000,
+  )
+  const configuredDisconnectTimeoutMs = parsePositiveInteger(
+    environment.DISCONNECT_TIMEOUT_MS,
+    60_000,
+  )
 
   return {
     port: parsePositiveInteger(environment.PORT, 3000),
     websocketPath: environment.WEBSOCKET_PATH ?? '/ws',
     bannedHostnames: parseBannedHostnames(environment.BANNED_HOSTNAMES),
-    heartbeatTimeoutMs: parsePositiveInteger(
-      environment.HEARTBEAT_TIMEOUT_MS,
-      30_000,
+    heartbeatTimeoutMs,
+    disconnectTimeoutMs: Math.max(
+      configuredDisconnectTimeoutMs,
+      heartbeatTimeoutMs + 1,
     ),
     maxParticipants: Math.min(configuredParticipantLimit, 100),
   }

@@ -63,13 +63,28 @@ WebSocket接続とユーザーを関連付け、転送時にサーバー側で`u
 閲覧内容を必要以上に収集しないため、URL全体やページタイトルは送らない。
 サーバーは`hostname`とBAN対象ドメインを比較してステータスを判定する。
 
+### `room.leave`
+
+```json
+{
+  "v": 1,
+  "type": "room.leave",
+  "seq": 3,
+  "sentAt": 1788652801500,
+  "payload": {}
+}
+```
+
+明示的に退出するときに送信する。サーバーは他の参加者へ
+`participant.left`を配信し、このWebSocket接続を閉じる。
+
 ### `avatar.pose`
 
 ```json
 {
   "v": 1,
   "type": "avatar.pose",
-  "seq": 3,
+  "seq": 4,
   "sentAt": 1788652802000,
   "payload": {
     "faceX": 0.12,
@@ -98,7 +113,7 @@ WebSocket接続とユーザーを関連付け、転送時にサーバー側で`u
 {
   "v": 1,
   "type": "avatar.tracking",
-  "seq": 4,
+  "seq": 5,
   "sentAt": 1788652803000,
   "payload": {
     "faceDetected": false
@@ -114,14 +129,14 @@ WebSocket接続とユーザーを関連付け、転送時にサーバー側で`u
 {
   "v": 1,
   "type": "heartbeat",
-  "seq": 5,
+  "seq": 6,
   "sentAt": 1788652810000,
   "payload": {}
 }
 ```
 
-10〜15秒間隔で送信し、サーバーは一定時間受信できなければ切断または離席として
-扱う。
+10〜15秒間隔で送信する。既定では、サーバーは30秒間受信できなければ`away`、
+60秒間受信できなければ接続を切断して`participant.left`を配信する。
 
 ## サーバーからクライアント
 

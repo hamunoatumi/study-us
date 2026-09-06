@@ -120,7 +120,14 @@ const run = async (): Promise<void> => {
   }))
   await away
 
-  sender.close()
+  const left = waitForMessage(observer, 'participant.left')
+  send(sender, envelope({
+    type: 'room.leave',
+    seq: 4,
+    payload: {},
+  }))
+  await left
+
   observer.close()
   console.log('ブロードキャストのデモが完了しました')
 }

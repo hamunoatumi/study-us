@@ -110,6 +110,7 @@ export function parseClientMessage(value: unknown): ParseResult<ClientToServerMe
     case 'avatar.tracking':
       valid = typeof payload.faceDetected === 'boolean'
       break
+    case 'room.leave':
     case 'heartbeat':
       valid = Object.keys(payload).length === 0
       break

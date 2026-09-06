@@ -25,10 +25,12 @@ npm run dev
 | `WEBSOCKET_PATH` | `/ws` | WebSocketの接続パス |
 | `BANNED_HOSTNAMES` | `youtube.com` | BAN対象ホスト名。複数はカンマ区切り |
 | `HEARTBEAT_TIMEOUT_MS` | `30000` | 受信が途絶えた参加者を離席にする時間 |
+| `DISCONNECT_TIMEOUT_MS` | `60000` | 受信が途絶えた接続を切断する時間 |
 | `MAX_PARTICIPANTS` | `100` | 同時参加者の上限（最大100） |
 
 `youtube.com`を指定すると、`www.youtube.com`などのサブドメインも対象になる。
 URL全体やページタイトルは保存・配信しない。
+アバター姿勢は最新値を保持し、他の参加者への配信を最大15fpsに制限する。
 
 ## ブロードキャストのデモ
 
@@ -45,6 +47,7 @@ npm run demo
 2. アバター姿勢の転送
 3. YouTube閲覧による`distracted`への変更
 4. 顔検出喪失による`away`への変更
+5. 明示的な退出による`participant.left`
 
 接続先を変える場合は`WS_URL`を指定する。
 

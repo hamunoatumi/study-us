@@ -51,6 +51,7 @@ export type ParticipantSnapshot = {
 }
 
 export type RoomJoinMessage = ProtocolEnvelope<'room.join', RoomJoinPayload>
+export type RoomLeaveMessage = ProtocolEnvelope<'room.leave', Record<string, never>>
 export type ActiveTabMessage = ProtocolEnvelope<'activity.tab', ActiveTabPayload>
 export type AvatarPoseMessage = ProtocolEnvelope<'avatar.pose', AvatarPosePayload>
 export type AvatarTrackingMessage = ProtocolEnvelope<
@@ -61,6 +62,7 @@ export type HeartbeatMessage = ProtocolEnvelope<'heartbeat', Record<string, neve
 
 export type ClientToServerMessage =
   | RoomJoinMessage
+  | RoomLeaveMessage
   | ActiveTabMessage
   | AvatarPoseMessage
   | AvatarTrackingMessage
