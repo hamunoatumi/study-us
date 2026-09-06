@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 440">
+  <symbol id="HAIR_ID-back" viewBox="0 0 400 440">
+    <g transform="translate(0 8)">
+      <path d="M101 112c-3 25 1 48 11 67 4 7 9 12 15 16-3-11-4-23-3-36 1-14 3-26 3-35-7-7-15-11-26-12z"/>
+      <path d="M299 112c3 25-1 48-11 67-4 7-9 12-15 16 3-11 4-23 3-36-1-14-3-26-3-35 7-7 15-11 26-12z"/>
+    </g>
+  </symbol>
+  <symbol id="HAIR_ID-crown" viewBox="0 0 400 440"></symbol>
+  <symbol id="HAIR_ID-foreground" viewBox="0 0 400 440">
+    <g transform="translate(0 8)">
+    <path fill-rule="evenodd" d="M200 24c-31-6-58 4-78 25-22 23-30 57-26 90 2 18 9 33 23 45h162c14-12 21-27 23-45 4-33-4-67-26-90-20-21-47-31-78-25zm0 48c-6 8-8 17-10 27-5 23-24 42-58 56l-13 29h162l-13-29c-34-14-53-33-58-56-2-10-4-19-10-27z"/>
+    <path d="M190 61c-4 29-17 56-39 77-11 11-23 19-36 24 14 2 28-2 41-10 23-15 35-40 38-73 1-7-1-13-4-18z"/>
+    <path d="M210 61c4 29 17 56 39 77 11 11 23 19 36 24-14 2-28-2-41-10-23-15-35-40-38-73-1-7 1-13 4-18z"/>
+    <g fill="none" stroke="#171923" stroke-linecap="round" opacity=".18">
+      <path d="M189 64c-5 34-29 72-68 96" stroke-width="2.4"/>
+      <path d="M211 64c5 34 29 72 68 96" stroke-width="2.4"/>
+      <path d="M200 34c-2 13-2 26 0 39" stroke-width="2.5"/>
+    </g>
+    <g fill="none" stroke="#fff" stroke-linecap="round" stroke-width="2.5" opacity=".13">
+      <path d="M118 65q28-29 64-31"/><path d="M218 34q36 2 64 31"/>
+      <path d="M105 103q35-30 77-49"/><path d="M218 54q42 19 77 49"/>
+      <path d="M114 151q39-20 66-62"/><path d="M220 89q27 42 66 62"/>
+    </g>
+    </g>
+  </symbol>
+</svg>
