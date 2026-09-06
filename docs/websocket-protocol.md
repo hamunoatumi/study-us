@@ -26,7 +26,7 @@ TypeScript型と実行時バリデーターは`shared/websocket/`を正本とす
 - `sentAt`: 送信時刻を表すUnix時刻（ミリ秒）。
 - `payload`: メッセージ種別ごとのデータ。
 
-クライアントから届いた`userId`は信用しない。ルーム参加後は、サーバーが
+クライアントから届いた`userId`は信用しない。参加後は、サーバーが
 WebSocket接続とユーザーを関連付け、転送時にサーバー側で`userId`を付与する。
 
 ## クライアントからサーバー
@@ -40,7 +40,6 @@ WebSocket接続とユーザーを関連付け、転送時にサーバー側で`u
   "seq": 1,
   "sentAt": 1788652800000,
   "payload": {
-    "roomId": "room-123",
     "username": "Taro",
     "avatarId": "haru"
   }
@@ -64,13 +63,28 @@ WebSocket接続とユーザーを関連付け、転送時にサーバー側で`u
 閲覧内容を必要以上に収集しないため、URL全体やページタイトルは送らない。
 サーバーは`hostname`とBAN対象ドメインを比較してステータスを判定する。
 
+### `room.leave`
+
+```json
+{
+  "v": 1,
+  "type": "room.leave",
+  "seq": 3,
+  "sentAt": 1788652801500,
+  "payload": {}
+}
+```
+
+明示的に退出するときに送信する。サーバーは他の参加者へ
+`participant.left`を配信し、このWebSocket接続を閉じる。
+
 ### `avatar.pose`
 
 ```json
 {
   "v": 1,
   "type": "avatar.pose",
-  "seq": 3,
+  "seq": 4,
   "sentAt": 1788652802000,
   "payload": {
     "faceX": 0.12,
@@ -90,6 +104,10 @@ WebSocket接続とユーザーを関連付け、転送時にサーバー側で`u
 カメラ映像やMediaPipeのランドマークは送らず、アバター描画に必要な正規化済みの
 値だけを送る。姿勢値は10〜15fpsを上限の目安とし、小数第3位程度へ丸める。
 
+サーバーから各クライアントへの送信待ちが64 KiB以上の場合、そのクライアントへの
+姿勢配信は省略する。参加通知、退出通知、状態変更は省略せず、送信待ちが1 MiB以上に
+達した接続は切断する。
+
 `faceX`、`faceY`、`headYaw`、`headPitch`、`rotation`、`eyeX`、`eyeY`は
 `-1`から`1`、目の開きと`mouthOpen`は`0`から`1`の範囲とする。
 
@@ -99,7 +117,7 @@ WebSocket接続とユーザーを関連付け、転送時にサーバー側で`u
 {
   "v": 1,
   "type": "avatar.tracking",
-  "seq": 4,
+  "seq": 5,
   "sentAt": 1788652803000,
   "payload": {
     "faceDetected": false
@@ -115,14 +133,14 @@ WebSocket接続とユーザーを関連付け、転送時にサーバー側で`u
 {
   "v": 1,
   "type": "heartbeat",
-  "seq": 5,
+  "seq": 6,
   "sentAt": 1788652810000,
   "payload": {}
 }
 ```
 
-10〜15秒間隔で送信し、サーバーは一定時間受信できなければ切断または離席として
-扱う。
+10〜15秒間隔で送信する。既定では、サーバーは30秒間受信できなければ`away`、
+60秒間受信できなければ接続を切断して`participant.left`を配信する。
 
 ## サーバーからクライアント
 

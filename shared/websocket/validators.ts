@@ -98,8 +98,7 @@ export function parseClientMessage(value: unknown): ParseResult<ClientToServerMe
 
   switch (type) {
     case 'room.join':
-      valid = isIdentifier(payload.roomId) &&
-        isUsername(payload.username) &&
+      valid = isUsername(payload.username) &&
         isIdentifier(payload.avatarId)
       break
     case 'activity.tab':
@@ -111,6 +110,7 @@ export function parseClientMessage(value: unknown): ParseResult<ClientToServerMe
     case 'avatar.tracking':
       valid = typeof payload.faceDetected === 'boolean'
       break
+    case 'room.leave':
     case 'heartbeat':
       valid = Object.keys(payload).length === 0
       break
@@ -131,8 +131,7 @@ export function parseServerMessage(value: unknown): ParseResult<ServerToClientMe
 
   switch (type) {
     case 'room.snapshot':
-      valid = isIdentifier(payload.roomId) &&
-        isIdentifier(payload.selfUserId) &&
+      valid = isIdentifier(payload.selfUserId) &&
         Array.isArray(payload.participants) &&
         payload.participants.length <= 100 &&
         payload.participants.every(isParticipantSnapshot)

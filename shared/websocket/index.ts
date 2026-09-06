@@ -22,6 +22,7 @@ export type {
   ProtocolErrorMessage,
   RoomJoinMessage,
   RoomJoinPayload,
+  RoomLeaveMessage,
   RoomSnapshotMessage,
   ServerToClientMessage,
 } from './messages.js'
