@@ -36,6 +36,8 @@ type Session = {
 
 const OPEN = WebSocket.OPEN
 const POSE_BROADCAST_INTERVAL_MS = 1_000 / 15
+const POSE_BACKPRESSURE_BYTES = 64 * 1024
+const DISCONNECT_BACKPRESSURE_BYTES = 1024 * 1024
 
 export class StudyUsRoomServer {
   readonly #webSocketServer: WebSocketServer
@@ -308,6 +310,20 @@ export class StudyUsRoomServer {
     payload: ServerPayloadByType[Type],
   ): void {
     if (session.socket.readyState !== OPEN) return
+
+    if (session.socket.bufferedAmount >= DISCONNECT_BACKPRESSURE_BYTES) {
+      console.warn(`送信待ちが上限を超えたため接続を切断します: ${session.userId}`)
+      session.socket.terminate()
+      return
+    }
+
+    if (
+      type === 'participant.pose' &&
+      session.socket.bufferedAmount >= POSE_BACKPRESSURE_BYTES
+    ) {
+      return
+    }
+
     session.socket.send(JSON.stringify({
       v: PROTOCOL_VERSION,
       type,
