@@ -18,6 +18,8 @@ export type FaceTrackerOptions = {
   minPresenceConfidence?: number
   minTrackingConfidence?: number
   smoothing?: number
+  lostTrackingGraceMs?: number
+  neutralReturnSmoothing?: number
 }
 
 export type FaceTracker = {
@@ -160,19 +162,34 @@ export async function createFaceTracker(
 
   let previousPose = neutralPose
   let previousVideoTime = -1
+  let lastDetectedAt: number | undefined
   let destroyed = false
+
+  const poseWhenTrackingIsLost = (now: number): AvatarPose => {
+    const graceMs = Math.max(0, options.lostTrackingGraceMs ?? 120)
+    if (lastDetectedAt !== undefined && now - lastDetectedAt <= graceMs) {
+      return previousPose
+    }
+
+    previousPose = smoothPose(
+      previousPose,
+      neutralPose,
+      options.neutralReturnSmoothing ?? 0.08,
+    )
+    return previousPose
+  }
 
   return {
     detect: video => {
-      if (destroyed || video.readyState < HTMLMediaElement.HAVE_CURRENT_DATA) {
-        return null
-      }
+      if (destroyed) return null
+      if (video.readyState < HTMLMediaElement.HAVE_CURRENT_DATA) return previousPose
       if (video.currentTime === previousVideoTime) return previousPose
       previousVideoTime = video.currentTime
 
-      const result = landmarker.detectForVideo(video, performance.now())
+      const now = performance.now()
+      const result = landmarker.detectForVideo(video, now)
       const landmarks = result.faceLandmarks[0]
-      if (!landmarks) return null
+      if (!landmarks) return poseWhenTrackingIsLost(now)
 
       const blendshapes = result.faceBlendshapes[0]?.categories ?? []
       const transformationMatrix =
@@ -182,8 +199,9 @@ export async function createFaceTracker(
         blendshapes,
         transformationMatrix,
       )
-      if (!detectedPose) return null
+      if (!detectedPose) return poseWhenTrackingIsLost(now)
 
+      lastDetectedAt = now
       previousPose = smoothPose(
         previousPose,
         detectedPose,

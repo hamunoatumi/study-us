@@ -53,6 +53,9 @@ controller.destroy()
 
 値は描画前に`0`から`1`、または`-1`から`1`へ制限する。
 検出値の揺れを抑えるため、直前の値との平滑化を行う。
+顔を一時的に検出できない場合は、最後の姿勢を短時間維持した後、その姿勢から
+`neutralPose`へ徐々に補間する。`lostTrackingGraceMs`で維持時間、
+`neutralReturnSmoothing`でニュートラルへ戻る速さを調整できる。
 
 ### モデルとWASM
 
