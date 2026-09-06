@@ -51,6 +51,12 @@ export function renderParticipants(participants, pipWindow) {
       nameElement.textContent = participant.name;
 
       // ステータス
+      const status = STATUS_INFO[participant.status] ?? {
+        label: '不明',
+        dotClass: 'bg-gray-400',
+        textClass: 'text-gray-400'
+      }
+      // ステータス全体
       const statusElement = pipWindow.document.createElement('div');
       statusElement.className = 'mt-1.5 flex items-center gap-1.5';
 

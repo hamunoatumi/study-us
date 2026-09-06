@@ -1,5 +1,6 @@
 import './style.css'
 import { openSubWindow, updateParticipants } from './pip/subwindow.js'
+import { startDistractionPipSync } from './integration/distractionPipSync.js'
 
 // 人数のモックデータ
   let participants = [
@@ -19,6 +20,7 @@ import { openSubWindow, updateParticipants } from './pip/subwindow.js'
       status: 'away'
     }
   ]
+  startDistractionPipSync(participants, 'user-1')    // 自分の参加者IDを指定
 
 document.querySelector('#app').innerHTML = `
   <main>
