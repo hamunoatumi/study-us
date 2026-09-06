@@ -10,7 +10,5 @@ export function judgeDistraction(tabInfo) {
   const isDistracted = DISTRACTION_HOSTS.some((domain) => hostname === domain || hostname.endsWith(`.${domain}`))
 
   if (isDistracted) { return 'distracted'}
-
-
   return 'studying'
 }
