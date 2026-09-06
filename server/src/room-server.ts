@@ -19,7 +19,7 @@ type ServerPayloadByType = {
 type Session = {
   socket: WebSocket
   userId: string
-  roomId: string | null
+  joined: boolean
   username: string | null
   avatarId: string | null
   status: ParticipantStatus
@@ -36,7 +36,7 @@ const OPEN = WebSocket.OPEN
 export class StudyUsRoomServer {
   readonly #webSocketServer: WebSocketServer
   readonly #sessions = new Map<WebSocket, Session>()
-  readonly #rooms = new Map<string, Set<Session>>()
+  readonly #participants = new Set<Session>()
   readonly #config: ServerConfig
   readonly #heartbeatTimer: NodeJS.Timeout
 
@@ -60,7 +60,7 @@ export class StudyUsRoomServer {
     const session: Session = {
       socket,
       userId: randomUUID(),
-      roomId: null,
+      joined: false,
       username: null,
       avatarId: null,
       status: 'studying',
@@ -116,7 +116,7 @@ export class StudyUsRoomServer {
       return
     }
 
-    if (session.roomId === null) {
+    if (!session.joined) {
       this.#sendError(
         session,
         'ROOM_NOT_JOINED',
@@ -134,7 +134,6 @@ export class StudyUsRoomServer {
       case 'avatar.pose':
         session.pose = message.payload
         this.#broadcast(
-          session.roomId,
           'participant.pose',
           { userId: session.userId, pose: message.payload },
           session,
@@ -152,10 +151,10 @@ export class StudyUsRoomServer {
 
   #joinRoom(
     session: Session,
-    payload: { roomId: string; username: string; avatarId: string },
+    payload: { username: string; avatarId: string },
     relatedSeq: number,
   ): void {
-    if (session.roomId !== null) {
+    if (session.joined) {
       this.#sendError(
         session,
         'ALREADY_JOINED',
@@ -165,30 +164,24 @@ export class StudyUsRoomServer {
       return
     }
 
-    let room = this.#rooms.get(payload.roomId)
-    if (room === undefined) {
-      room = new Set()
-      this.#rooms.set(payload.roomId, room)
-    }
-
-    if (room.size >= this.#config.maxRoomParticipants) {
+    if (this.#participants.size >= this.#config.maxParticipants) {
       this.#sendError(session, 'ROOM_FULL', 'ルームの参加上限に達しています', relatedSeq)
       return
     }
 
-    const existingParticipants = [...room].map((member) => this.#snapshot(member))
-    session.roomId = payload.roomId
+    const existingParticipants = [...this.#participants].map((member) =>
+      this.#snapshot(member),
+    )
+    session.joined = true
     session.username = payload.username
     session.avatarId = payload.avatarId
-    room.add(session)
+    this.#participants.add(session)
 
     this.#send(session, 'room.snapshot', {
-      roomId: payload.roomId,
       selfUserId: session.userId,
       participants: existingParticipants,
     })
     this.#broadcast(
-      payload.roomId,
       'participant.joined',
       this.#snapshot(session),
       session,
@@ -197,17 +190,14 @@ export class StudyUsRoomServer {
 
   #removeSession(session: Session): void {
     this.#sessions.delete(session.socket)
-    if (session.roomId === null) return
+    if (!session.joined) return
 
-    const room = this.#rooms.get(session.roomId)
-    room?.delete(session)
+    this.#participants.delete(session)
     this.#broadcast(
-      session.roomId,
       'participant.left',
       { userId: session.userId },
       session,
     )
-    if (room?.size === 0) this.#rooms.delete(session.roomId)
   }
 
   #snapshot(session: Session): ParticipantSnapshot {
@@ -230,9 +220,9 @@ export class StudyUsRoomServer {
         ? 'distracted'
         : 'studying'
 
-    if (session.status === nextStatus || session.roomId === null) return
+    if (session.status === nextStatus || !session.joined) return
     session.status = nextStatus
-    this.#broadcast(session.roomId, 'participant.status', {
+    this.#broadcast('participant.status', {
       userId: session.userId,
       status: nextStatus,
       changedAt: Date.now(),
@@ -243,12 +233,12 @@ export class StudyUsRoomServer {
     const now = Date.now()
     for (const session of this.#sessions.values()) {
       if (
-        session.roomId !== null &&
+        session.joined &&
         session.status !== 'away' &&
         now - session.lastHeartbeatAt > this.#config.heartbeatTimeoutMs
       ) {
         session.status = 'away'
-        this.#broadcast(session.roomId, 'participant.status', {
+        this.#broadcast('participant.status', {
           userId: session.userId,
           status: 'away',
           changedAt: now,
@@ -258,12 +248,11 @@ export class StudyUsRoomServer {
   }
 
   #broadcast<Type extends keyof ServerPayloadByType>(
-    roomId: string,
     type: Type,
     payload: ServerPayloadByType[Type],
     excludedSession?: Session,
   ): void {
-    for (const member of this.#rooms.get(roomId) ?? []) {
+    for (const member of this.#participants) {
       if (member !== excludedSession) this.#send(member, type, payload)
     }
   }

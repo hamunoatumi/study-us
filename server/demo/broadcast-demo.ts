@@ -71,7 +71,7 @@ const run = async (): Promise<void> => {
   send(observer, envelope({
     type: 'room.join',
     seq: 0,
-    payload: { roomId: 'demo-room', username: 'Jiro', avatarId: 'ren' },
+    payload: { username: 'Jiro', avatarId: 'ren' },
   }))
   await observerSnapshot
 
@@ -81,7 +81,7 @@ const run = async (): Promise<void> => {
   send(sender, envelope({
     type: 'room.join',
     seq: 0,
-    payload: { roomId: 'demo-room', username: 'Taro', avatarId: 'haru' },
+    payload: { username: 'Taro', avatarId: 'haru' },
   }))
   await Promise.all([senderSnapshot, joined])
 

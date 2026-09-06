@@ -30,7 +30,6 @@ export type AvatarPosePayload = {
 }
 
 export type RoomJoinPayload = {
-  roomId: string
   username: string
   avatarId: string
 }
@@ -70,7 +69,6 @@ export type ClientToServerMessage =
 export type RoomSnapshotMessage = ProtocolEnvelope<
   'room.snapshot',
   {
-    roomId: string
     selfUserId: string
     participants: ParticipantSnapshot[]
   }

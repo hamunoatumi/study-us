@@ -3,7 +3,7 @@ export type ServerConfig = {
   websocketPath: string
   bannedHostnames: ReadonlySet<string>
   heartbeatTimeoutMs: number
-  maxRoomParticipants: number
+  maxParticipants: number
 }
 
 const parsePositiveInteger = (
@@ -32,8 +32,8 @@ const parseBannedHostnames = (value: string | undefined): ReadonlySet<string> =>
 export const loadServerConfig = (
   environment: NodeJS.ProcessEnv = process.env,
 ): ServerConfig => {
-  const configuredRoomLimit = parsePositiveInteger(
-    environment.MAX_ROOM_PARTICIPANTS,
+  const configuredParticipantLimit = parsePositiveInteger(
+    environment.MAX_PARTICIPANTS,
     100,
   )
 
@@ -45,7 +45,7 @@ export const loadServerConfig = (
       environment.HEARTBEAT_TIMEOUT_MS,
       30_000,
     ),
-    maxRoomParticipants: Math.min(configuredRoomLimit, 100),
+    maxParticipants: Math.min(configuredParticipantLimit, 100),
   }
 }
 

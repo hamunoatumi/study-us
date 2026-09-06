@@ -26,7 +26,7 @@ TypeScript型と実行時バリデーターは`shared/websocket/`を正本とす
 - `sentAt`: 送信時刻を表すUnix時刻（ミリ秒）。
 - `payload`: メッセージ種別ごとのデータ。
 
-クライアントから届いた`userId`は信用しない。ルーム参加後は、サーバーが
+クライアントから届いた`userId`は信用しない。参加後は、サーバーが
 WebSocket接続とユーザーを関連付け、転送時にサーバー側で`userId`を付与する。
 
 ## クライアントからサーバー
@@ -40,7 +40,6 @@ WebSocket接続とユーザーを関連付け、転送時にサーバー側で`u
   "seq": 1,
   "sentAt": 1788652800000,
   "payload": {
-    "roomId": "room-123",
     "username": "Taro",
     "avatarId": "haru"
   }
