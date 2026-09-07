@@ -1,22 +1,38 @@
+const nextSeqBySocket = new WeakMap()
+
+
+// WebSocketサーバーへ接続
 export function connectRoom() {
   return new Promise((resolve, reject) => {
     const socket =
       new WebSocket('ws://localhost:3000/ws')
 
-    socket.addEventListener('open', () => {
-      console.log('WebSocket接続成功')
-      resolve(socket)
-    }, { once: true })
+    // このsocketの送信seqを0から開始
+    nextSeqBySocket.set(socket, 0)
 
-    socket.addEventListener('error', () => {
-      reject(
-        new Error('WebSocket接続に失敗しました')
-      )
-    }, { once: true })
+    socket.addEventListener(
+      'open',
+      () => {
+        console.log('WebSocket接続成功')
+        resolve(socket)
+      },
+      { once: true }
+    )
+
+    socket.addEventListener(
+      'error',
+      () => {
+        reject(
+          new Error('WebSocket接続に失敗しました')
+        )
+      },
+      { once: true }
+    )
   })
 }
 
 
+// ルームへ参加
 export function joinRoom(
   socket,
   username
@@ -32,7 +48,7 @@ export function joinRoom(
         return
       }
 
-      // 参加成功
+      // room.join成功
       if (message.type === 'room.snapshot') {
         cleanup()
 
@@ -62,20 +78,133 @@ export function joinRoom(
       handleMessage
     )
 
-    const message = {
-      v: 1,
-      type: 'room.join',
-      seq: 0,
-      sentAt: Date.now(),
-
-      payload: {
+    // room.joinを送信
+    sendClientMessage(
+      socket,
+      'room.join',
+      {
         username,
         avatarId: 'haru'
       }
-    }
-
-    socket.send(
-      JSON.stringify(message)
     )
   })
+}
+
+
+// ルーム内のリアルタイムイベントを受信
+export function subscribeRoomEvents(
+  socket,
+  handlers
+) {
+  function handleMessage(event) {
+    let message
+
+    try {
+      message = JSON.parse(event.data)
+    } catch {
+      return
+    }
+
+    switch (message.type) {
+
+      // 新しい参加者
+      case 'participant.joined':
+        handlers.onJoined?.(
+          message.payload
+        )
+        break
+
+      // 参加者が退出
+      case 'participant.left':
+        handlers.onLeft?.(
+          message.payload
+        )
+        break
+
+      // status変更
+      case 'participant.status':
+        handlers.onStatus?.(
+          message.payload
+        )
+        break
+    }
+  }
+
+  socket.addEventListener(
+    'message',
+    handleMessage
+  )
+
+  // イベント受信を停止する関数を返す
+  return function unsubscribe() {
+    socket.removeEventListener(
+      'message',
+      handleMessage
+    )
+  }
+}
+
+
+// Heartbeatを開始
+export function startHeartbeat(socket) {
+  const timerId = setInterval(() => {
+
+    // WebSocket接続中でなければ送らない
+    if (
+      socket.readyState !== WebSocket.OPEN
+    ) {
+      return
+    }
+
+    sendClientMessage(
+      socket,
+      'heartbeat',
+      {}
+    )
+
+  }, 10_000)
+
+  // Heartbeat停止
+  function stopHeartbeat() {
+    clearInterval(timerId)
+  }
+
+  // WebSocketが閉じたらHeartbeatも停止
+  socket.addEventListener(
+    'close',
+    stopHeartbeat,
+    { once: true }
+  )
+
+  return stopHeartbeat
+}
+
+
+// サーバーへメッセージを送る共通関数
+function sendClientMessage(
+  socket,
+  type,
+  payload
+) {
+  // 現在のseqを取得
+  const seq =
+    nextSeqBySocket.get(socket) ?? 0
+
+  // 次回用に+1
+  nextSeqBySocket.set(
+    socket,
+    seq + 1
+  )
+
+  const message = {
+    v: 1,
+    type,
+    seq,
+    sentAt: Date.now(),
+    payload
+  }
+
+  socket.send(
+    JSON.stringify(message)
+  )
 }
