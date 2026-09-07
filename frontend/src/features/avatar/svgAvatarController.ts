@@ -1,10 +1,23 @@
-import { startCamera, type StartCameraOptions } from './camera'
-import { createFaceTracker, type FaceTrackerOptions } from './faceTracker'
+import {
+  startCamera,
+  type StartCameraOptions,
+} from './camera'
+
+import {
+  createFaceTracker,
+  type FaceTrackerOptions,
+} from './faceTracker'
+
 import {
   createSvgAvatarRenderer,
   type SvgAvatarRendererOptions,
 } from './svgRenderer'
-import { neutralPose } from './types'
+
+import {
+  neutralPose,
+  type AvatarPose,
+} from './types'
+
 
 export type FaceTrackedSvgAvatarControllerOptions = {
   video: HTMLVideoElement
@@ -12,8 +25,13 @@ export type FaceTrackedSvgAvatarControllerOptions = {
   camera?: StartCameraOptions
   faceTracker?: FaceTrackerOptions
   renderer?: SvgAvatarRendererOptions
+
+  // pose取得時に外へ通知
+  onPose?: (pose: AvatarPose) => void
+
   onError?: (error: Error) => void
 }
+
 
 export type FaceTrackedSvgAvatarController = {
   start: () => Promise<void>
@@ -21,43 +39,118 @@ export type FaceTrackedSvgAvatarController = {
   destroy: () => void
 }
 
+
 export async function createFaceTrackedSvgAvatarController(
   options: FaceTrackedSvgAvatarControllerOptions,
 ): Promise<FaceTrackedSvgAvatarController> {
-  const renderer = createSvgAvatarRenderer(options.svg, options.renderer)
-  const tracker = await createFaceTracker(options.faceTracker)
-  let stopCamera: (() => void) | undefined
-  let animationFrame: number | undefined
+
+  const renderer =
+    createSvgAvatarRenderer(
+      options.svg,
+      options.renderer
+    )
+
+  const tracker =
+    await createFaceTracker(
+      options.faceTracker
+    )
+
+  let stopCamera:
+    (() => void) | undefined
+
+  let animationFrame:
+    number | undefined
+
   let running = false
 
-  const renderNextFrame = async () => {
-    if (!running) return
-    try {
-      renderer.render((await tracker.detect(options.video)) ?? neutralPose)
-    } catch (error) {
-      options.onError?.(error instanceof Error ? error : new Error(String(error)))
+
+  const renderNextFrame =
+    async () => {
+
+      if (!running) return
+
+      try {
+        const pose =
+          await tracker.detect(
+            options.video
+          )
+
+        const currentPose =
+          pose ?? neutralPose
+
+        // 自分のSVGアバターを動かす
+        renderer.render(
+          currentPose
+        )
+
+        // WebSocket等へposeを渡せるようにする
+        options.onPose?.(
+          currentPose
+        )
+
+      } catch (error) {
+        options.onError?.(
+          error instanceof Error
+            ? error
+            : new Error(String(error))
+        )
+      }
+
+      if (running) {
+        animationFrame =
+          requestAnimationFrame(
+            renderNextFrame
+          )
+      }
     }
-    animationFrame = requestAnimationFrame(renderNextFrame)
-  }
+
 
   const stop = () => {
     running = false
-    if (animationFrame !== undefined) cancelAnimationFrame(animationFrame)
+
+    if (
+      animationFrame !== undefined
+    ) {
+      cancelAnimationFrame(
+        animationFrame
+      )
+    }
+
     animationFrame = undefined
+
     stopCamera?.()
     stopCamera = undefined
-    renderer.render(neutralPose)
+
+    renderer.render(
+      neutralPose
+    )
   }
 
+
   return {
+
     start: async () => {
       if (running) return
-      const cameraSession = await startCamera(options.video, options.camera)
-      stopCamera = cameraSession.stop
+
+      const cameraSession =
+        await startCamera(
+          options.video,
+          options.camera
+        )
+
+      stopCamera =
+        cameraSession.stop
+
       running = true
-      animationFrame = requestAnimationFrame(renderNextFrame)
+
+      animationFrame =
+        requestAnimationFrame(
+          renderNextFrame
+        )
     },
+
     stop,
+
     destroy: () => {
       stop()
       tracker.destroy()

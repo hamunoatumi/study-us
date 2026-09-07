@@ -5,6 +5,9 @@ import { connectRoom, joinRoom, subscribeRoomEvents, startHeartbeat } from './we
 import {
   startTabActivitySync
 } from './integration/tabActivitySync.js'
+import {
+  startLocalAvatar
+} from './integration/localAvatar.js'
 
 setupHome(async (username) => {
   const socket = await connectRoom()
@@ -13,6 +16,18 @@ setupHome(async (username) => {
   const snapshot = await joinRoom(socket, username)
   startHeartbeat(socket)
   startTabActivitySync(socket)
+
+  const video =
+  document.querySelector('#camera')
+
+const svg =
+  document.querySelector('#local-avatar')
+
+await startLocalAvatar(
+  socket,
+  video,
+  svg
+)
 
   // 自分
   const me = {

@@ -107,23 +107,26 @@ export function subscribeRoomEvents(
 
     switch (message.type) {
 
-      // 新しい参加者
       case 'participant.joined':
         handlers.onJoined?.(
           message.payload
         )
         break
 
-      // 参加者が退出
       case 'participant.left':
         handlers.onLeft?.(
           message.payload
         )
         break
 
-      // status変更
       case 'participant.status':
         handlers.onStatus?.(
+          message.payload
+        )
+        break
+
+      case 'participant.pose':
+        handlers.onPose?.(
           message.payload
         )
         break
@@ -135,7 +138,6 @@ export function subscribeRoomEvents(
     handleMessage
   )
 
-  // イベント受信を停止する関数を返す
   return function unsubscribe() {
     socket.removeEventListener(
       'message',
@@ -223,5 +225,22 @@ export function sendActiveTab(
     {
       hostname
     }
+  )
+}
+
+export function sendAvatarPose(
+  socket,
+  pose
+) {
+  if (
+    socket.readyState !== WebSocket.OPEN
+  ) {
+    return
+  }
+
+  sendClientMessage(
+    socket,
+    'avatar.pose',
+    pose
   )
 }
