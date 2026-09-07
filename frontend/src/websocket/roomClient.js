@@ -208,3 +208,20 @@ function sendClientMessage(
     JSON.stringify(message)
   )
 }
+
+export function sendActiveTab(
+  socket,
+  hostname
+) {
+  if (socket.readyState !== WebSocket.OPEN) {
+    return
+  }
+
+  sendClientMessage(
+    socket,
+    'activity.tab',
+    {
+      hostname
+    }
+  )
+}

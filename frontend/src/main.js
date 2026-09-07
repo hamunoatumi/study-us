@@ -2,6 +2,9 @@ import './style.css'
 import { openSubWindow, updateParticipants } from './pip/subwindow.js'
 import { setupHome }from './home-screen/home.js'
 import { connectRoom, joinRoom, subscribeRoomEvents, startHeartbeat } from './websocket/roomClient.js'
+import {
+  startTabActivitySync
+} from './integration/tabActivitySync.js'
 
 setupHome(async (username) => {
   const socket = await connectRoom()
@@ -9,6 +12,7 @@ setupHome(async (username) => {
   // ルームに参加
   const snapshot = await joinRoom(socket, username)
   startHeartbeat(socket)
+  startTabActivitySync(socket)
 
   // 自分
   const me = {
