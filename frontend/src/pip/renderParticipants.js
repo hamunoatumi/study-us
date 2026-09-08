@@ -9,6 +9,8 @@ export function renderParticipants(participants, pipWindow) {
 
     participantCountElement.textContent =`${participants.length}人参加`;
 
+    sannkasyayouso.replaceChildren();
+
     // 参加人数に応じた画面分割
     let gridClass;
 
@@ -32,8 +34,7 @@ export function renderParticipants(participants, pipWindow) {
     }
 
     sannkasyayouso.className = `grid min-h-0 flex-1 gap-2.5 p-3 ${gridClass}`;
-    
-    sannkasyayouso.replaceChildren();
+  
 
     //1人ずつ表示
     for(const participant of participants){
@@ -66,7 +67,7 @@ export function renderParticipants(participants, pipWindow) {
       statusElement.appendChild(statusDot);
       statusElement.appendChild(statusLabel);
 
-      const {svg: avatarElement} = createPipAvatar( pipWindow.document, participant.avatarId ?? 'haru')
+      const avatarElement = createPipAvatar( pipWindow.document, participant.id, participant.avatarId ?? 'haru' )
 
       // participantの中に入れる
       participantElement.appendChild(avatarElement);

@@ -11,7 +11,8 @@ import {
 export async function startLocalAvatar(
   socket,
   video,
-  svg
+  svg,
+  onPose
 ) {
   const haru =
     avatarPresets.find(
@@ -33,8 +34,13 @@ export async function startLocalAvatar(
       svg,
       renderer: haru,
 
-      // ここで顔追跡とWebSocketを接続
-      onPose: sendPose,
+      onPose: (pose) => {
+        // 相手に送る
+        sendPose(pose)
+
+        // 自分のPiPにも反映
+        onPose?.(pose)
+      },
 
       onError: error => {
         console.error(

@@ -8,6 +8,10 @@ import {
 import {
   startLocalAvatar
 } from './integration/localAvatar.js'
+import {
+  updatePipAvatarPose
+} from './pip/pipAvatar.js'
+
 
 setupHome(async (username) => {
   const socket = await connectRoom()
@@ -23,30 +27,36 @@ setupHome(async (username) => {
 const svg =
   document.querySelector('#local-avatar')
 
-await startLocalAvatar(
-  socket,
-  video,
-  svg
-)
 
   // 自分
   const me = {
-    id: snapshot.selfId,
+    id: snapshot.selfUserId,
     name: username,
-    status: 'studying'
+    status: 'studying',
+    avatarId: 'haru'
   }
 
   // 他の参加者
   const others = snapshot.participants.map((participant) => ({
     id: participant.userId,
     name: participant.username,
-    status: participant.status
+    status: participant.status,
+    avatarId: participant.avatarId
   }))
 
   // PiP用参加者一覧
   const participants = [me, ...others]
   // PiP表示
   await openSubWindow(participants)
+
+  await startLocalAvatar(
+    socket,
+    video,
+    svg,
+    (pose) => {
+      updatePipAvatarPose(snapshot.selfUserId, pose)
+    }
+  )
 
   subscribeRoomEvents(socket, {
 
@@ -64,12 +74,15 @@ await startLocalAvatar(
     participants.push({
       id: participant.userId,
       name: participant.username,
-      status: participant.status
+      status: participant.status,
+      avatarId: participant.avatarId
     })
 
     updateParticipants(participants)
   },
 
+  onPose({ userId, pose }) {updatePipAvatarPose(userId, pose)},
+  
 
   // 参加者が退出
   onLeft({ userId }) {

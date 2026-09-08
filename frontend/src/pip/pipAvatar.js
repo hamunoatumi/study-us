@@ -4,9 +4,11 @@ import {
   neutralPose,
 } from '../features/avatar/index.ts'
 
+const avatarRenderers = new Map()
 
 export function createPipAvatar(
   pipDocument,
+  userId,
   avatarId = 'haru'
 ) {
   // PiP側のDocumentにSVGを作る
@@ -50,13 +52,24 @@ export function createPipAvatar(
       preset
     )
 
-  // 今は静止状態で表示
-  renderer.render(
-    neutralPose
+    renderer.render(neutralPose)
+
+  avatarRenderers.set(
+    userId,
+    renderer
   )
 
-  return {
-    svg,
-    renderer,
+  return svg
+}
+
+  // 指定ユーザーのposeだけ更新
+export function updatePipAvatarPose( userId, pose) {
+  const renderer =
+    avatarRenderers.get(userId)
+
+  if (!renderer) {
+    return
   }
+
+  renderer.render(pose)
 }
