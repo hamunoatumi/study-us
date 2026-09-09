@@ -1,11 +1,14 @@
 const nextSeqBySocket = new WeakMap()
+const websocketUrl =
+  import.meta.env.VITE_WEBSOCKET_URL?.trim() ||
+  'ws://localhost:3000/ws'
 
 
 // WebSocketサーバーへ接続
 export function connectRoom() {
   return new Promise((resolve, reject) => {
     const socket =
-      new WebSocket('ws://localhost:3000/ws')
+      new WebSocket(websocketUrl)
 
     // このsocketの送信seqを0から開始
     nextSeqBySocket.set(socket, 0)
