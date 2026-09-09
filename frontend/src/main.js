@@ -1,5 +1,5 @@
 import './style.css'
-import { openSubWindow, updateParticipants } from './pip/subwindow.js'
+import { openSubWindow, updateParticipants, closeSubWindow } from './pip/subwindow.js'
 import { setupHome } from './home-screen/home.js'
 import { connectRoom, joinRoom, subscribeRoomEvents, startHeartbeat, leaveRoom } from './websocket/roomClient.js'
 import { startTabActivitySync } from './integration/tabActivitySync.js'
@@ -7,7 +7,7 @@ import { startLocalAvatar } from './integration/localAvatar.js'
 import { updatePipAvatarPose } from './pip/pipAvatar.js'
 
 let currentSocket = null  // 退出処理で使用
-
+let currentAvatarController = null  // 退出処理(カメラ、pip)で使用
 
 setupHome(
 
@@ -17,6 +17,9 @@ setupHome(
 
     // ルームに参加
     const snapshot = await joinRoom(socket, username)
+
+    // 今使っているsocketを退出処理から使えるよう保存
+    currentSocket = socket
 
     startHeartbeat(socket)
     startTabActivitySync(socket)
@@ -48,7 +51,7 @@ setupHome(
     await openSubWindow(participants)
 
     // カメラ・アバター開始
-    await startLocalAvatar(
+    currentAvatarController = await startLocalAvatar(
       socket,
       video,
       svg,
@@ -131,20 +134,23 @@ setupHome(
         updateParticipants(participants)
       }
     })
-
-
-    // 今使っているsocketを退出処理から使えるよう保存
-    currentSocket = socket
   },
 
 
   // 退出処理
   async () => {
-    if (!currentSocket) return
+  if (!currentSocket) return
 
-    leaveRoom(currentSocket)
+  // サーバーへ退出通知
+  leaveRoom(currentSocket)
 
-    currentSocket = null
-  }
+  // カメラ・顔追跡を停止
+  currentAvatarController?.destroy()
+
+  closeSubWindow()
+
+  currentSocket = null
+  currentAvatarController = null
+}
 
 )
