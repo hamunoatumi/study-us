@@ -1,36 +1,14 @@
-import {
-  avatarPresets,
-  createSvgAvatarRenderer,
-  neutralPose,
-} from '../features/avatar/index.ts'
+import { avatarPresets, createSvgAvatarRenderer, neutralPose} from '../features/avatar/index.ts'
 
 const avatarRenderers = new Map()
 
-export function createPipAvatar(
-  pipDocument,
-  userId,
-  avatarId = 'haru'
-) {
+export function createPipAvatar(pipDocument, userId, avatarId = 'haru') {
   // PiP側のDocumentにSVGを作る
-  const svg = pipDocument.createElementNS(
-    'http://www.w3.org/2000/svg',
-    'svg'
-  )
+  const svg = pipDocument.createElementNS('http://www.w3.org/2000/svg', 'svg')
 
-  svg.setAttribute(
-    'viewBox',
-    '0 0 320 320'
-  )
-
-  svg.setAttribute(
-    'aria-label',
-    'avatar'
-  )
-
-  svg.classList.add(
-    'h-20',
-    'w-20'
-  )
+  svg.setAttribute('viewBox', '0 0 320 320')    // svgのサイズ x,y,幅, 高さ
+  svg.setAttribute('aria-label', 'avatar')    // アクセシビリティ
+  svg.classList.add('min-h-0', 'w-full', 'flex-1')        // SVGのサイズを指定
 
   // avatarIdに対応するアバターを探す
   const preset =

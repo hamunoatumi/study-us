@@ -40,7 +40,7 @@ export function renderParticipants(participants, pipWindow) {
     for(const participant of participants){
       // 参加者全体
       const participantElement = pipWindow.document.createElement('div');
-      participantElement.className = 'participant flex min-h-0 flex-col items-center justify-center rounded-[18px] border border-black/5 bg-white px-3 py-3';
+      participantElement.className =  'participant flex min-h-0 flex-col items-center rounded-[18px] border border-black/5 bg-white px-2 py-2'//'participant flex min-h-0 flex-col items-center justify-center rounded-[18px] border border-black/5 bg-white px-3 py-3';
 
       // 名前
       const nameElement = pipWindow.document.createElement('div');
