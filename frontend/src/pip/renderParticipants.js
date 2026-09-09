@@ -1,4 +1,5 @@
 import { STATUS_INFO } from './status.js';
+import { createPipAvatar } from './pipAvatar.js';
 
 // サブウィンドウに参加者を表示する
 export function renderParticipants(participants, pipWindow) {
@@ -7,6 +8,8 @@ export function renderParticipants(participants, pipWindow) {
     const participantCountElement = pipWindow.document.querySelector('#participant-count');
 
     participantCountElement.textContent =`${participants.length}人参加`;
+
+    sannkasyayouso.replaceChildren();
 
     // 参加人数に応じた画面分割
     let gridClass;
@@ -31,19 +34,13 @@ export function renderParticipants(participants, pipWindow) {
     }
 
     sannkasyayouso.className = `grid min-h-0 flex-1 gap-2.5 p-3 ${gridClass}`;
-    
-    sannkasyayouso.replaceChildren();
+  
 
     //1人ずつ表示
     for(const participant of participants){
       // 参加者全体
       const participantElement = pipWindow.document.createElement('div');
-      participantElement.className = 'participant flex min-h-0 flex-col items-center justify-center rounded-[18px] border border-black/5 bg-whitepx-3 py-3';
-
-      // アバター
-      const avatarElement = pipWindow.document.createElement('div');
-      avatarElement.className = 'avatar mb-2 flex h-16 w-16 items-center justify-center rounded-full bg-gray-100 text-3xl';
-      avatarElement.textContent = '👤';
+      participantElement.className =  'participant flex min-h-0 flex-col items-center rounded-[18px] border border-black/5 bg-white px-2 py-2'//'participant flex min-h-0 flex-col items-center justify-center rounded-[18px] border border-black/5 bg-white px-3 py-3';
 
       // 名前
       const nameElement = pipWindow.document.createElement('div');
@@ -69,6 +66,8 @@ export function renderParticipants(participants, pipWindow) {
       statusLabel.textContent = status.label;
       statusElement.appendChild(statusDot);
       statusElement.appendChild(statusLabel);
+
+      const avatarElement = createPipAvatar( pipWindow.document, participant.id, participant.avatarId ?? 'haru' )
 
       // participantの中に入れる
       participantElement.appendChild(avatarElement);
