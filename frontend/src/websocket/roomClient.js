@@ -244,3 +244,18 @@ export function sendAvatarPose(
     pose
   )
 }
+
+// ルームから(フロントから)退出
+export function leaveRoom(socket) {
+  if (
+    socket.readyState !== WebSocket.OPEN
+  ) {
+    return
+  }
+
+  sendClientMessage(
+    socket,
+    'room.leave',
+    {}
+  )
+}

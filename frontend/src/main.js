@@ -1,121 +1,150 @@
 import './style.css'
 import { openSubWindow, updateParticipants } from './pip/subwindow.js'
-import { setupHome }from './home-screen/home.js'
-import { connectRoom, joinRoom, subscribeRoomEvents, startHeartbeat } from './websocket/roomClient.js'
-import {
-  startTabActivitySync
-} from './integration/tabActivitySync.js'
-import {
-  startLocalAvatar
-} from './integration/localAvatar.js'
-import {
-  updatePipAvatarPose
-} from './pip/pipAvatar.js'
+import { setupHome } from './home-screen/home.js'
+import { connectRoom, joinRoom, subscribeRoomEvents, startHeartbeat, leaveRoom } from './websocket/roomClient.js'
+import { startTabActivitySync } from './integration/tabActivitySync.js'
+import { startLocalAvatar } from './integration/localAvatar.js'
+import { updatePipAvatarPose } from './pip/pipAvatar.js'
+
+let currentSocket = null  // 退出処理で使用
 
 
-setupHome(async (username) => {
-  const socket = await connectRoom()
+setupHome(
 
-  // ルームに参加
-  const snapshot = await joinRoom(socket, username)
-  startHeartbeat(socket)
-  startTabActivitySync(socket)
+  // 参加処理
+  async (username) => {
+    const socket = await connectRoom()
 
-  const video =
-  document.querySelector('#camera')
+    // ルームに参加
+    const snapshot = await joinRoom(socket, username)
 
-const svg =
-  document.querySelector('#local-avatar')
+    startHeartbeat(socket)
+    startTabActivitySync(socket)
+
+    const video = document.querySelector('#camera')
+    const svg = document.querySelector('#local-avatar')
 
 
-  // 自分
-  const me = {
-    id: snapshot.selfUserId,
-    name: username,
-    status: 'studying',
-    avatarId: 'haru'
-  }
-
-  // 他の参加者
-  const others = snapshot.participants.map((participant) => ({
-    id: participant.userId,
-    name: participant.username,
-    status: participant.status,
-    avatarId: participant.avatarId
-  }))
-
-  // PiP用参加者一覧
-  const participants = [me, ...others]
-  // PiP表示
-  await openSubWindow(participants)
-
-  await startLocalAvatar(
-    socket,
-    video,
-    svg,
-    (pose) => {
-      updatePipAvatarPose(snapshot.selfUserId, pose)
+    // 自分
+    const me = {
+      id: snapshot.selfUserId,
+      name: username,
+      status: 'studying',
+      avatarId: 'haru'
     }
-  )
 
-  subscribeRoomEvents(socket, {
-
-  // 新しい参加者
-  onJoined(participant) {
-
-    const alreadyExists =
-      participants.some(
-        (item) =>
-          item.id === participant.userId
-      )
-
-    if (alreadyExists) return
-
-    participants.push({
+    // 他の参加者
+    const others = snapshot.participants.map((participant) => ({
       id: participant.userId,
       name: participant.username,
       status: participant.status,
       avatarId: participant.avatarId
+    }))
+
+    // PiP用参加者一覧
+    const participants = [me, ...others]
+
+    // PiP表示
+    await openSubWindow(participants)
+
+    // カメラ・アバター開始
+    await startLocalAvatar(
+      socket,
+      video,
+      svg,
+      (pose) => {
+        updatePipAvatarPose(
+          snapshot.selfUserId,
+          pose
+        )
+      }
+    )
+
+
+    // サーバーからのイベントを受信
+    subscribeRoomEvents(socket, {
+
+      // 新しい参加者
+      onJoined(participant) {
+
+        const alreadyExists =
+          participants.some(
+            (item) =>
+              item.id === participant.userId
+          )
+
+        if (alreadyExists) return
+
+        participants.push({
+          id: participant.userId,
+          name: participant.username,
+          status: participant.status,
+          avatarId: participant.avatarId
+        })
+
+        updateParticipants(participants)
+      },
+
+
+      // アバターの姿勢変更
+      onPose({ userId, pose }) {
+        updatePipAvatarPose(
+          userId,
+          pose
+        )
+      },
+
+
+      // 参加者が退出
+      onLeft({ userId }) {
+
+        const index =
+          participants.findIndex(
+            (participant) =>
+              participant.id === userId
+          )
+
+        if (index === -1) return
+
+        participants.splice(
+          index,
+          1
+        )
+
+        updateParticipants(participants)
+      },
+
+
+      // status変更
+      onStatus({ userId, status }) {
+
+        const participant =
+          participants.find(
+            (participant) =>
+              participant.id === userId
+          )
+
+        if (!participant) return
+
+        participant.status = status
+
+        updateParticipants(participants)
+      }
     })
 
-    updateParticipants(participants)
-  },
 
-  onPose({ userId, pose }) {updatePipAvatarPose(userId, pose)},
-  
-
-  // 参加者が退出
-  onLeft({ userId }) {
-
-    const index =
-      participants.findIndex(
-        (participant) =>
-          participant.id === userId
-      )
-
-    if (index === -1) return
-
-    participants.splice(index, 1)
-
-    updateParticipants(participants)
+    // 今使っているsocketを退出処理から使えるよう保存
+    currentSocket = socket
   },
 
 
-  // status変更
-  onStatus({ userId, status }) {
+  // 退出処理
+  async () => {
+    if (!currentSocket) return
 
-    const participant =
-      participants.find(
-        (participant) =>
-          participant.id === userId
-      )
+    leaveRoom(currentSocket)
 
-    if (!participant) return
-
-    participant.status = status
-
-    updateParticipants(participants)
+    currentSocket = null
   }
-})
-})
 
+)
