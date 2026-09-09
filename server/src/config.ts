@@ -1,6 +1,7 @@
 export type ServerConfig = {
   port: number
   websocketPath: string
+  allowedOrigins: ReadonlySet<string>
   bannedHostnames: ReadonlySet<string>
   heartbeatTimeoutMs: number
   disconnectTimeoutMs: number
@@ -19,6 +20,24 @@ const parsePositiveInteger = (
 
 const normalizeHostname = (hostname: string): string =>
   hostname.trim().toLowerCase().replace(/\.$/u, '')
+
+const parseAllowedOrigins = (value: string | undefined): ReadonlySet<string> => {
+  if (value === undefined || value.trim() === '') return new Set()
+
+  return new Set(value.split(',').map((configuredOrigin) => {
+    const origin = configuredOrigin.trim()
+
+    try {
+      const url = new URL(origin)
+      if (!['http:', 'https:'].includes(url.protocol) || url.origin === 'null') {
+        throw new Error()
+      }
+      return url.origin
+    } catch {
+      throw new Error(`ALLOWED_ORIGINSに不正なOriginがあります: ${origin}`)
+    }
+  }))
+}
 
 const parseBannedHostnames = (value: string | undefined): ReadonlySet<string> => {
   const configured = value ?? 'youtube.com'
@@ -49,6 +68,7 @@ export const loadServerConfig = (
   return {
     port: parsePositiveInteger(environment.PORT, 3000),
     websocketPath: environment.WEBSOCKET_PATH ?? '/ws',
+    allowedOrigins: parseAllowedOrigins(environment.ALLOWED_ORIGINS),
     bannedHostnames: parseBannedHostnames(environment.BANNED_HOSTNAMES),
     heartbeatTimeoutMs,
     disconnectTimeoutMs: Math.max(
@@ -58,6 +78,13 @@ export const loadServerConfig = (
     maxParticipants: Math.min(configuredParticipantLimit, 100),
   }
 }
+
+export const isOriginAllowed = (
+  origin: string | undefined,
+  allowedOrigins: ReadonlySet<string>,
+): boolean =>
+  allowedOrigins.size === 0 ||
+  (origin !== undefined && allowedOrigins.has(origin))
 
 export const isBannedHostname = (
   hostname: string,

@@ -1,9 +1,9 @@
 import { createServer } from 'node:http'
 
 import express from 'express'
-import { WebSocketServer } from 'ws'
+import { WebSocketServer, type WebSocket } from 'ws'
 
-import { loadServerConfig } from './config.js'
+import { isOriginAllowed, loadServerConfig } from './config.js'
 import { StudyUsRoomServer } from './room-server.js'
 
 const config = loadServerConfig()
@@ -14,10 +14,13 @@ app.get('/health', (_request, response) => {
 })
 
 const httpServer = createServer(app)
+const verifyClient: WebSocket.VerifyClientCallbackSync = ({ origin }) =>
+  isOriginAllowed(origin, config.allowedOrigins)
 const webSocketServer = new WebSocketServer({
   server: httpServer,
   path: config.websocketPath,
   maxPayload: 64 * 1024,
+  verifyClient,
 })
 
 const roomServer = new StudyUsRoomServer(webSocketServer, config)
