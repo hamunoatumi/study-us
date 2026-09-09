@@ -8,7 +8,7 @@
   
   <body>
     <main class="flex min-h-screen items-center justify-center px-6">
-      <section class="w-full max-w-3xl">
+      <section id="join-screen" class="w-full max-w-3xl">
         <header class="mb-10 text-center">
           <h1 class="text-3xl font-semibold tracking-tight text-gray-900">StudyUs</h1>
           <p class="mt-2 text-sm text-gray-500">一人じゃない</p>
@@ -33,6 +33,15 @@
 
           <video id="camera" autoplay playsinline muted class="hidden"></video>
         </div>
+      </section>
+
+      <!-- 参加中の画面 -->
+
+      <section id="connected-screen" class="hidden w-full max-w-sm text-center">
+        <h1  class="text-3xl font-semibold tracking-tight text-gray-900">StudyUs</h1>
+        <p class="mt-3 text-sm text-gray-500">ルームに参加中</p>
+        <p id="connected-username" class="mt-6 text-lg font-medium text-gray-900"></p>
+        <button id="leave-button" type="button" class="mt-8 w-full rounded-xl border border-gray-200 bg-white px-4 py-3 text-sm font-medium text-gray-700 hover:bg-gray-50">ルームから退出</button>
       </section>
     </main>
 
