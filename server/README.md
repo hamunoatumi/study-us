@@ -23,12 +23,15 @@ npm run dev
 | --- | --- | --- |
 | `PORT` | `3000` | HTTP/WebSocketの待受ポート |
 | `WEBSOCKET_PATH` | `/ws` | WebSocketの接続パス |
+| `ALLOWED_ORIGINS` | 未設定 | 接続を許可するフロントのOrigin。複数はカンマ区切り |
 | `BANNED_HOSTNAMES` | `youtube.com` | BAN対象ホスト名。複数はカンマ区切り |
 | `HEARTBEAT_TIMEOUT_MS` | `30000` | 受信が途絶えた参加者を離席にする時間 |
 | `DISCONNECT_TIMEOUT_MS` | `60000` | 受信が途絶えた接続を切断する時間 |
 | `MAX_PARTICIPANTS` | `100` | 同時参加者の上限（最大100） |
 
 `youtube.com`を指定すると、`www.youtube.com`などのサブドメインも対象になる。
+`ALLOWED_ORIGINS`を設定した場合、一覧にないOriginとOriginを持たない接続は拒否する。
+ローカル開発では未設定にすることで、接続元を制限せずに利用できる。
 URL全体やページタイトルは保存・配信しない。
 アバター姿勢は最新値を保持し、他の参加者への配信を最大15fpsに制限する。
 クライアントへの送信待ちが64 KiB以上の場合は姿勢の配信を省略し、古い姿勢が
