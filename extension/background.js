@@ -1,6 +1,7 @@
 const STUDYUS_PAGE_PATTERNS = [
   'http://localhost:5173/*',
   'http://127.0.0.1:5173/*',
+  "https://steadier-easing-provolone.ngrok-free.dev/*"
 ]
 
 function createTabPayload(tab) {
