@@ -5,4 +5,10 @@ export default defineConfig({
   plugins: [
     tailwindcss(),
   ],
+
+  server: {
+    allowedHosts: [
+      'steadier-easing-provolone.ngrok-free.dev'
+    ]
+  }
 })
