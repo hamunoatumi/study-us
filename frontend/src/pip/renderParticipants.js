@@ -3,78 +3,66 @@ import { createPipAvatar } from './pipAvatar.js';
 
 // サブウィンドウに参加者を表示する
 export function renderParticipants(participants, pipWindow) {
-    // サブウィンドウのDOM要素を取得
-    const sannkasyayouso = pipWindow.document.querySelector('#participants');
-    const participantCountElement = pipWindow.document.querySelector('#participant-count');
+  const participantsElement = pipWindow.document.querySelector('#participants');
+  const participantCountElement = pipWindow.document.querySelector('#participant-count');
 
-    participantCountElement.textContent =`${participants.length}人参加`;
+  participantCountElement.textContent = `${participants.length}人参加`;
+  participantsElement.replaceChildren();
 
-    sannkasyayouso.replaceChildren();
+  // 参加者が0人
+  if (participants.length === 0) {
+    participantsElement.className = 'flex min-h-0 flex-1 items-center justify-center p-2';
+    
+    const messageElement = pipWindow.document.createElement('p');
+    messageElement.className = 'text-sm text-gray-400';
+    messageElement.textContent = '参加者がいません';
+    
+    participantsElement.appendChild(messageElement);
+    return;
+  }
 
-    // 参加人数に応じた画面分割
-    let gridClass;
+  // 参加人数に応じた画面分割
+  const gridClass = participants.length === 1 ? 'grid-cols-1' : 'grid-cols-2';
+  participantsElement.className = `grid min-h-0 flex-1 gap-2 p-2 ${gridClass}`;
 
-    if(participants.length === 0){
-        sannkasyayouso.className = 'flex min-h-0 flex-1 items-center justify-center p-3';
-        const messageElement = pipWindow.document.createElement('p');
+  // 1人ずつ表示
+  for (const participant of participants) {
+    // status情報を取得
+    const status = STATUS_INFO[participant.status] ?? {
+      label: '不明',
+      backgroundColor: '#f9fafb',
+      stripeColor: 'rgba(156, 163, 175, 0.14)'
+    };
 
-        messageElement.className = 'text-sm text-gray-400';
-        messageElement.textContent = '参加者がいません';
+    // 参加者カード
+    const participantElement = pipWindow.document.createElement('div');
+    participantElement.className = 'participant flex min-h-0 flex-col items-center justify-center overflow-hidden rounded-[18px] border border-black/5 px-1 py-1';
 
-        sannkasyayouso.appendChild(messageElement);
-        return;
-    }
+    // statusに応じてカード背景を変更
+    participantElement.style.backgroundColor = status.backgroundColor;
+    participantElement.style.backgroundImage = `
+      repeating-linear-gradient(
+        135deg,
+        ${status.stripeColor} 0px,
+        ${status.stripeColor} 10px,
+        transparent 10px,
+        transparent 20px
+      )
+    `;
 
-    if(participants.length === 1){
-      gridClass = 'grid-cols-1'
-    } else if(participants.length <= 4){
-      gridClass = 'grid-cols-2'
-    } else {
-      gridClass = 'grid-cols-3'
-    }
+    // 2Dアバター
+    const avatarElement = createPipAvatar(pipWindow.document, participant.id, participant.avatarId ?? 'haru');
 
-    sannkasyayouso.className = `grid min-h-0 flex-1 gap-2.5 p-3 ${gridClass}`;
-  
+    // 名前
+    const nameElement = pipWindow.document.createElement('div');
+    nameElement.className = 'max-w-full truncate text-sm font-semibold text-gray-900';
+    nameElement.textContent = participant.name;
 
-    //1人ずつ表示
-    for(const participant of participants){
-      // 参加者全体
-      const participantElement = pipWindow.document.createElement('div');
-      participantElement.className =  'participant flex min-h-0 flex-col items-center rounded-[18px] border border-black/5 bg-white px-2 py-2'//'participant flex min-h-0 flex-col items-center justify-center rounded-[18px] border border-black/5 bg-white px-3 py-3';
+    // カードへ追加
+    participantElement.appendChild(avatarElement);
+    participantElement.appendChild(nameElement);
 
-      // 名前
-      const nameElement = pipWindow.document.createElement('div');
-      nameElement.className = 'max-w-full truncate text-sm font-medium text-gray-900';
-      nameElement.textContent = participant.name;
-
-      // ステータス
-      const status = STATUS_INFO[participant.status] ?? {
-        label: '不明',
-        dotClass: 'bg-gray-400',
-        textClass: 'text-gray-400'
-      }
-      // ステータス全体
-      const statusElement = pipWindow.document.createElement('div');
-      statusElement.className = 'mt-1.5 flex items-center gap-1.5';
-
-      // 丸
-      const statusDot = pipWindow.document.createElement('span');
-      statusDot.className =`h-1.5 w-1.5 rounded-full ${status.dotClass}`;
-      // 文字
-      const statusLabel = pipWindow.document.createElement('span');
-      statusLabel.className = `text-[11px] font-medium ${status.textClass}`;
-      statusLabel.textContent = status.label;
-      statusElement.appendChild(statusDot);
-      statusElement.appendChild(statusLabel);
-
-      const avatarElement = createPipAvatar( pipWindow.document, participant.id, participant.avatarId ?? 'haru' )
-
-      // participantの中に入れる
-      participantElement.appendChild(avatarElement);
-      participantElement.appendChild(nameElement);
-      participantElement.appendChild(statusElement);
-
-      // サブウィンドウの参加者要素に追加
-      sannkasyayouso.appendChild(participantElement);
-    }
+    // PiPへ追加
+    participantsElement.appendChild(participantElement);
+  }
 }

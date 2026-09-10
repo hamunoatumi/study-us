@@ -12,7 +12,7 @@ export async function openSubWindow(participants) {
     }
 
     try {
-      pipWindow = await documentPictureInPicture.requestWindow({ width: 400, height: 250});
+      pipWindow = await documentPictureInPicture.requestWindow({ width: 320, height: 320});
     }catch (error) {
       console.error('PiPウィンドウの起動に失敗しました:', error);
       pipWindow = null;
@@ -27,30 +27,29 @@ export async function openSubWindow(participants) {
     copyStylesToPip()       // tailwindcssをpipに適応
 
     pipWindow.document.body.innerHTML = `
-    <main class="flex h-screen flex-col overflow-hidden bg-[#F5F5F7] text-gray-900">
-    
-    <header
-      class="
-        flex h-11 shrink-0
-        items-center justify-between
-        border-b border-black/5
-        bg-white
-        px-4">
-      <h1 class="text-[15px] font-semibold tracking-tight">
-        StudyUs
-      </h1>
+  <main class="flex h-screen flex-col overflow-hidden bg-[#F5F5F7] text-gray-900">
+    <header class="flex h-11 shrink-0 items-center border-b border-black/5 bg-white px-3">
+      <h1 class="mr-3 text-[14px] font-semibold tracking-tight">StudyUs</h1>
 
-      <span
-        id="participant-count"
-        class="text-xs text-gray-400">
-      </span>
+      <div class="flex items-center gap-2 text-[10px] text-gray-500">
+        <span class="flex items-center gap-1">
+          <span class="h-1.5 w-1.5 rounded-full bg-green-500"></span>
+          勉強中
+        </span>
+        <span class="flex items-center gap-1">
+          <span class="h-1.5 w-1.5 rounded-full bg-red-500"></span>
+          サボり
+        </span>
+        <span class="flex items-center gap-1">
+          <span class="h-1.5 w-1.5 rounded-full bg-gray-400"></span>
+          離席中
+        </span>
+      </div>
+
+      <span id="participant-count" class="ml-auto text-[10px] text-gray-400"></span>
     </header>
 
-    <section
-      id="participants"
-      class="min-h-0 flex-1 p-3">
-    </section>
-
+    <section id="participants" class="min-h-0 flex-1 p-2"></section>
   </main>
 `
 
