@@ -6,7 +6,7 @@ export function createPipAvatar(pipDocument, userId, avatarId = 'haru') {
   // PiP側のDocumentにSVGを作る
   const svg = pipDocument.createElementNS('http://www.w3.org/2000/svg', 'svg')
 
-  svg.setAttribute('viewBox', '0 0 320 320')    // svgのサイズ x,y,幅, 高さ
+  svg.setAttribute('viewBox', '40 20 240 260')    // svgのサイズ x,y,幅, 高さ
   svg.setAttribute('aria-label', 'avatar')    // アクセシビリティ
   svg.classList.add('min-h-0', 'w-full', 'flex-1')        // SVGのサイズを指定
 
