@@ -9,6 +9,12 @@ export default defineConfig({
   server: {
     allowedHosts: [
       'steadier-easing-provolone.ngrok-free.dev'
-    ]
+    ],
+    proxy: {
+      '/ws': {
+        target: 'ws://localhost:3000',
+        ws: true
+      }
+    }
   }
 })
