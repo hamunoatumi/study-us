@@ -14,6 +14,7 @@ npm run dev
 
 - HTTPヘルスチェック: `http://localhost:3000/health`
 - WebSocket: `ws://localhost:3000/ws`
+- 拡張機能ZIP: `http://localhost:3000/extension/download`
 
 ## 設定
 
@@ -32,6 +33,8 @@ npm run dev
 `youtube.com`を指定すると、`www.youtube.com`などのサブドメインも対象になる。
 `ALLOWED_ORIGINS`を設定した場合、一覧にないOriginとOriginを持たない接続は拒否する。
 ローカル開発では未設定にすることで、接続元を制限せずに利用できる。
+拡張機能ZIPの`manifest.json`と`config.js`にも`ALLOWED_ORIGINS`を反映する。
+未設定の場合は`http://localhost:5173`と`http://127.0.0.1:5173`を使用する。
 URL全体やページタイトルは保存・配信しない。
 アバター姿勢は最新値を保持し、他の参加者への配信を最大15fpsに制限する。
 クライアントへの送信待ちが64 KiB以上の場合は姿勢の配信を省略し、古い姿勢が

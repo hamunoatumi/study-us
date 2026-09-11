@@ -142,3 +142,26 @@ Canvas描画、画面側の呼び出し方は変更しない。
 
 検証ページは`frontend/avatar-preview.html`。本体の`main.js`から独立しているため、
 画面統合作業までは既存画面と競合しない。
+
+## archiver
+
+- バージョン: `8.0.0`
+- ライセンス: MIT
+- 公式リポジトリ: https://github.com/archiverjs/node-archiver
+- npm: https://www.npmjs.com/package/archiver
+
+### 採用目的
+
+`extension/`にある拡張機能の実ファイルをZIPストリームへ変換し、サーバーから
+ダウンロードできるようにするために使用する。
+
+### 利用箇所
+
+- `server/src/extension-package.ts`
+  - 拡張機能テンプレートの読み込み
+  - `ALLOWED_ORIGINS`を反映した`manifest.json`と`config.js`の生成
+  - ZIPを一時ファイルとして残さずHTTPレスポンスへ直接出力
+
+アーカイブにはタブ情報やカメラ情報などの利用者データを含めない。
+更新時はZIPを展開し、`manifest.json`、`background.js`、`content.js`、
+`config.js`が含まれることを確認する。
