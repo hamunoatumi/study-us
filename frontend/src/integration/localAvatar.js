@@ -4,7 +4,8 @@ import {
 } from '../features/avatar'
 
 import {
-  createAvatarPoseSender
+  createAvatarPoseSender,
+  sendTrackingState,
 } from './avatarPoseSync.js'
 
 
@@ -40,6 +41,10 @@ export async function startLocalAvatar(
 
         // 自分のPiPにも反映
         onPose?.(pose)
+      },
+
+      onTrackingChange: (faceDetected) => {
+        sendTrackingState(socket, faceDetected)
       },
 
       onError: error => {

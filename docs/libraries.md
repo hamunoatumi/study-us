@@ -56,6 +56,9 @@ controller.destroy()
 顔を一時的に検出できない場合は、最後の姿勢を短時間維持した後、その姿勢から
 `neutralPose`へ徐々に補間する。`lostTrackingGraceMs`で維持時間、
 `neutralReturnSmoothing`でニュートラルへ戻る速さを調整できる。
+顔未検出が`lostTrackingStatusDelayMs`（既定1.5秒）続いた場合は、検出状態の変化を
+`onTrackingChange`へ通知する。短時間の検出揺れでは離席扱いにせず、再検出時も
+状態が変わったときだけ通知する。
 
 ### モデルとWASM
 

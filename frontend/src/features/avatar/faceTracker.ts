@@ -19,7 +19,9 @@ export type FaceTrackerOptions = {
   minTrackingConfidence?: number
   smoothing?: number
   lostTrackingGraceMs?: number
+  lostTrackingStatusDelayMs?: number
   neutralReturnSmoothing?: number
+  onTrackingChange?: (faceDetected: boolean) => void
 }
 
 export type FaceTracker = {
@@ -163,9 +165,33 @@ export async function createFaceTracker(
   let previousPose = neutralPose
   let previousVideoTime = -1
   let lastDetectedAt: number | undefined
+  let trackingMissingSince: number | undefined
+  let faceDetected = true
   let destroyed = false
 
+  const updateTrackingState = (detected: boolean, now: number): void => {
+    if (detected) {
+      trackingMissingSince = undefined
+      if (!faceDetected) {
+        faceDetected = true
+        options.onTrackingChange?.(true)
+      }
+      return
+    }
+
+    trackingMissingSince ??= now
+    const statusDelayMs = Math.max(
+      0,
+      options.lostTrackingStatusDelayMs ?? 1_500,
+    )
+    if (faceDetected && now - trackingMissingSince >= statusDelayMs) {
+      faceDetected = false
+      options.onTrackingChange?.(false)
+    }
+  }
+
   const poseWhenTrackingIsLost = (now: number): AvatarPose => {
+    updateTrackingState(false, now)
     const graceMs = Math.max(0, options.lostTrackingGraceMs ?? 120)
     if (lastDetectedAt !== undefined && now - lastDetectedAt <= graceMs) {
       return previousPose
@@ -201,6 +227,7 @@ export async function createFaceTracker(
       )
       if (!detectedPose) return poseWhenTrackingIsLost(now)
 
+      updateTrackingState(true, now)
       lastDetectedAt = now
       previousPose = smoothPose(
         previousPose,

@@ -1,5 +1,6 @@
 import {
-  sendAvatarPose
+  sendAvatarPose,
+  sendAvatarTracking,
 } from '../websocket/roomClient.js'
 
 
@@ -21,4 +22,8 @@ export function createAvatarPoseSender(socket) {
       pose
     )
   }
+}
+
+export function sendTrackingState(socket, faceDetected) {
+  sendAvatarTracking(socket, faceDetected)
 }

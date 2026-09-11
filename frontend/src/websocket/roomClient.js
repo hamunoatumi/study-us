@@ -247,6 +247,25 @@ export function sendAvatarPose(
   )
 }
 
+export function sendAvatarTracking(
+  socket,
+  faceDetected
+) {
+  if (
+    socket.readyState !== WebSocket.OPEN
+  ) {
+    return
+  }
+
+  sendClientMessage(
+    socket,
+    'avatar.tracking',
+    {
+      faceDetected
+    }
+  )
+}
+
 // ルームから(フロントから)退出
 export function leaveRoom(socket) {
   if (
