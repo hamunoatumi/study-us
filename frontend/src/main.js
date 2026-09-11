@@ -82,11 +82,22 @@ setupHome(
 
         if (alreadyExists) return
 
+        const usedAvatarIds =
+          participants.map(
+            (participant) =>
+              participant.avatarId
+          )
+
+        const avatar =
+          getRandomAvatarPreset(
+            usedAvatarIds
+          )
+
         participants.push({
           id: participant.userId,
           name: participant.username,
           status: participant.status,
-          avatarId: avatar.Id
+          avatarId: avatar.id
         })
 
         updateParticipants(participants)
