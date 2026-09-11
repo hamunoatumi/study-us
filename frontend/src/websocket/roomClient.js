@@ -35,10 +35,7 @@ export function connectRoom() {
 
 
 // ルームへ参加
-export function joinRoom(
-  socket,
-  username
-) {
+export function joinRoom(socket, username, avatarId) {
   return new Promise((resolve, reject) => {
 
     function handleMessage(event) {
@@ -69,16 +66,10 @@ export function joinRoom(
     }
 
     function cleanup() {
-      socket.removeEventListener(
-        'message',
-        handleMessage
-      )
+      socket.removeEventListener('message', handleMessage)
     }
 
-    socket.addEventListener(
-      'message',
-      handleMessage
-    )
+    socket.addEventListener('message', handleMessage)
 
     // room.joinを送信
     sendClientMessage(
@@ -86,7 +77,7 @@ export function joinRoom(
       'room.join',
       {
         username,
-        avatarId: 'haru'
+        avatarId
       }
     )
   })
@@ -160,13 +151,7 @@ export function startHeartbeat(socket) {
       return
     }
 
-    sendClientMessage(
-      socket,
-      'heartbeat',
-      {}
-    )
-
-  }, 10_000)
+    sendClientMessage(socket, 'heartbeat', {} )}, 10_000)
 
   // Heartbeat停止
   function stopHeartbeat() {
