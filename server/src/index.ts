@@ -4,6 +4,7 @@ import express from 'express'
 import { WebSocketServer, type WebSocket } from 'ws'
 
 import { isOriginAllowed, loadServerConfig } from './config.js'
+import { streamExtensionPackage } from './extension-package.js'
 import { StudyUsRoomServer } from './room-server.js'
 
 const config = loadServerConfig()
@@ -11,6 +12,20 @@ const app = express()
 
 app.get('/health', (_request, response) => {
   response.json({ status: 'ok' })
+})
+
+app.get('/extension/download', async (_request, response) => {
+  try {
+    await streamExtensionPackage(response, config.allowedOrigins)
+  } catch (error) {
+    console.error('拡張機能のZIP生成に失敗しました', error)
+
+    if (!response.headersSent) {
+      response.status(500).json({ error: 'extension_package_failed' })
+    } else {
+      response.destroy(error instanceof Error ? error : undefined)
+    }
+  }
 })
 
 const httpServer = createServer(app)
