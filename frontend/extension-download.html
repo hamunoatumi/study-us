@@ -7,72 +7,86 @@
     <title>Chrome拡張機能の設定 | StudyUs</title>
   </head>
 
-  <body class="min-h-screen bg-slate-50 text-slate-900 antialiased">
-    <header class="border-b border-slate-200 bg-white/90 backdrop-blur">
+  <body class="studyus-page min-h-screen text-[#102749] antialiased">
+    <header class="border-b border-[#dfe8f4] bg-white/75 backdrop-blur-xl">
       <div class="mx-auto flex max-w-4xl items-center justify-between px-5 py-4 sm:px-8">
-        <a href="/" class="text-lg font-semibold tracking-tight text-slate-900">StudyUs</a>
-        <a href="/" class="text-sm font-medium text-slate-500 transition hover:text-slate-900">トップへ戻る</a>
+        <a href="/" class="flex items-center gap-2.5 font-bold tracking-[-0.02em] text-[#102749]">
+          <span class="flex h-9 w-9 items-center justify-center rounded-xl bg-[#102749] text-white">
+            <svg aria-hidden="true" viewBox="0 0 24 24" class="h-5 w-5 fill-none stroke-current" stroke-width="1.7"><path d="M4.5 5.5c2.9-.8 5.4-.2 7.5 1.5v12c-2.1-1.7-4.6-2.3-7.5-1.5v-12Zm15 0c-2.9-.8-5.4-.2-7.5 1.5v12c2.1-1.7 4.6-2.3 7.5-1.5v-12Z" stroke-linecap="round" stroke-linejoin="round" /></svg>
+          </span>
+          <span class="text-lg">StudyUs</span>
+        </a>
+        <a href="/" class="flex items-center gap-1.5 text-sm font-semibold text-[#60789b] transition hover:text-[#102749]">
+          <svg aria-hidden="true" viewBox="0 0 24 24" class="h-4 w-4 fill-none stroke-current" stroke-width="1.8"><path d="m14 6-6 6 6 6" stroke-linecap="round" stroke-linejoin="round" /></svg>
+          トップへ戻る
+        </a>
       </div>
     </header>
 
-    <main class="mx-auto max-w-4xl px-5 py-10 sm:px-8 sm:py-14">
-      <section class="overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-sm">
-        <div class="border-b border-slate-100 px-6 py-8 sm:px-10 sm:py-10">
-          <span class="inline-flex rounded-full bg-sky-50 px-3 py-1 text-xs font-semibold text-sky-700">Desktop Chrome</span>
-          <h1 class="mt-4 text-2xl font-semibold tracking-tight sm:text-3xl">サボり検知用の拡張機能を設定</h1>
-          <p class="mt-3 max-w-2xl text-sm leading-7 text-slate-600 sm:text-base">
-            StudyUsが別タブで開かれているサイトを判定するために必要です。ZIPをダウンロードし、下の手順に沿ってChromeへ読み込んでください。
-          </p>
+    <main class="relative mx-auto max-w-4xl px-5 py-9 sm:px-8 sm:py-14">
+      <section class="studyus-card overflow-hidden rounded-[30px] border border-white/90 bg-white/90 shadow-[0_24px_70px_rgba(49,79,127,0.13)] backdrop-blur-sm">
+        <div class="relative overflow-hidden border-b border-[#e1e9f3] px-6 py-8 sm:px-10 sm:py-11">
+          <div aria-hidden="true" class="absolute -right-14 -top-20 h-60 w-60 rounded-full bg-[#eaf2fc]"></div>
+          <div class="relative">
+            <span class="inline-flex items-center gap-2 rounded-full border border-[#d9e5f2] bg-white/75 px-3 py-1.5 text-xs font-semibold text-[#55749c]">
+              <span class="h-2 w-2 rounded-full bg-[#5f83b0]"></span>
+              Desktop Chrome
+            </span>
+            <h1 class="mt-5 text-2xl font-bold tracking-[-0.025em] text-[#102749] sm:text-3xl">サボり検知を設定する</h1>
+            <p class="mt-4 max-w-2xl text-base leading-8 text-[#5d7393]">
+              StudyUsが別タブで開かれているサイトを判定するために必要です。ZIPをダウンロードし、手順に沿ってChromeへ読み込んでください。
+            </p>
 
-          <a id="extension-download-link" href="/extension/download" download class="mt-7 inline-flex w-full items-center justify-center gap-2 rounded-xl bg-slate-900 px-5 py-3.5 text-sm font-semibold text-white shadow-sm transition hover:bg-slate-700 focus:outline-none focus:ring-2 focus:ring-slate-400 focus:ring-offset-2 sm:w-auto">
-            <svg aria-hidden="true" viewBox="0 0 24 24" class="h-5 w-5 fill-none stroke-current" stroke-width="1.8">
-              <path d="M12 3v12m0 0 4-4m-4 4-4-4M5 20h14" stroke-linecap="round" stroke-linejoin="round" />
-            </svg>
-            拡張機能をダウンロード
-          </a>
+            <a id="extension-download-link" href="/extension/download" download class="mt-7 inline-flex w-full items-center justify-center gap-2.5 whitespace-nowrap rounded-2xl bg-gradient-to-r from-[#18375f] to-[#3f6898] px-5 py-4 text-sm font-semibold text-white shadow-[0_14px_30px_rgba(36,75,121,0.23)] transition hover:-translate-y-0.5 hover:shadow-[0_17px_34px_rgba(36,75,121,0.28)] focus:outline-none focus:ring-4 focus:ring-[#b9d0ea] sm:w-auto sm:px-6 sm:text-base">
+              <svg aria-hidden="true" viewBox="0 0 24 24" class="h-5 w-5 fill-none stroke-current" stroke-width="1.8"><path d="M12 3v12m0 0 4-4m-4 4-4-4M5 20h14" stroke-linecap="round" stroke-linejoin="round" /></svg>
+              拡張機能をダウンロード
+            </a>
+          </div>
         </div>
 
         <div class="px-6 py-8 sm:px-10 sm:py-10">
-          <h2 class="text-lg font-semibold">Chromeへの読み込み方</h2>
-          <ol class="mt-6 grid gap-4">
-            <li class="flex gap-4 rounded-2xl bg-slate-50 p-4 sm:p-5">
-              <span class="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-white text-sm font-semibold text-slate-700 shadow-sm">1</span>
-              <div><h3 class="font-medium">ZIPを展開する</h3><p class="mt-1 text-sm leading-6 text-slate-600">ダウンロードした <code class="rounded bg-slate-200/70 px-1.5 py-0.5 text-xs">study-us-extension.zip</code> を右クリックし、「すべて展開」を選びます。</p></div>
+          <p class="text-xs font-bold tracking-[0.2em] text-[#6785aa]">SETUP GUIDE</p>
+          <h2 class="mt-2 text-xl font-bold text-[#102749]">Chromeへの読み込み方</h2>
+
+          <ol class="mt-7 grid gap-4">
+            <li class="flex gap-4 rounded-2xl border border-[#e0e9f3] bg-[#f9fbfe] p-4 sm:p-5">
+              <span class="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-white text-sm font-bold text-[#466a95] shadow-[0_4px_12px_rgba(47,77,117,0.09)]">1</span>
+              <div><h3 class="font-semibold text-[#193452]">ZIPを展開する</h3><p class="mt-1.5 text-sm leading-6 text-[#627895]">ダウンロードした <code class="rounded bg-[#e8eff7] px-1.5 py-0.5 text-xs">study-us-extension.zip</code> を右クリックし、「すべて展開」を選びます。</p></div>
             </li>
-            <li class="flex gap-4 rounded-2xl bg-slate-50 p-4 sm:p-5">
-              <span class="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-white text-sm font-semibold text-slate-700 shadow-sm">2</span>
+            <li class="flex gap-4 rounded-2xl border border-[#e0e9f3] bg-[#f9fbfe] p-4 sm:p-5">
+              <span class="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-white text-sm font-bold text-[#466a95] shadow-[0_4px_12px_rgba(47,77,117,0.09)]">2</span>
               <div class="min-w-0 flex-1">
-                <h3 class="font-medium">拡張機能の管理画面を開く</h3>
-                <p class="mt-1 text-sm leading-6 text-slate-600">次の文字列をChromeのアドレス欄へ貼り付けて開きます。</p>
-                <div class="mt-3 flex items-center gap-2 rounded-xl border border-slate-200 bg-white p-2 pl-3">
-                  <code class="min-w-0 flex-1 truncate text-sm text-slate-700">chrome://extensions</code>
-                  <button id="copy-extensions-url" type="button" class="shrink-0 rounded-lg border border-slate-200 px-3 py-1.5 text-xs font-medium text-slate-600 transition hover:bg-slate-50">コピー</button>
+                <h3 class="font-semibold text-[#193452]">拡張機能の管理画面を開く</h3>
+                <p class="mt-1.5 text-sm leading-6 text-[#627895]">次の文字列をChromeのアドレス欄へ貼り付けて開きます。</p>
+                <div class="mt-3 flex items-center gap-2 rounded-xl border border-[#cfdeed] bg-white p-2 pl-3">
+                  <code class="min-w-0 flex-1 truncate text-sm text-[#3e5c80]">chrome://extensions</code>
+                  <button id="copy-extensions-url" type="button" class="shrink-0 rounded-lg bg-[#edf3fa] px-3 py-2 text-xs font-semibold text-[#44658e] transition hover:bg-[#e2ecf7] focus:outline-none focus:ring-2 focus:ring-[#aac2df]">コピー</button>
                 </div>
                 <p id="copy-result" aria-live="polite" class="mt-2 min-h-5 text-xs text-emerald-700"></p>
               </div>
             </li>
-            <li class="flex gap-4 rounded-2xl bg-slate-50 p-4 sm:p-5">
-              <span class="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-white text-sm font-semibold text-slate-700 shadow-sm">3</span>
-              <div><h3 class="font-medium">デベロッパーモードを有効にする</h3><p class="mt-1 text-sm leading-6 text-slate-600">管理画面の右上にある「デベロッパーモード」をオンにします。</p></div>
+            <li class="flex gap-4 rounded-2xl border border-[#e0e9f3] bg-[#f9fbfe] p-4 sm:p-5">
+              <span class="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-white text-sm font-bold text-[#466a95] shadow-[0_4px_12px_rgba(47,77,117,0.09)]">3</span>
+              <div><h3 class="font-semibold text-[#193452]">デベロッパーモードを有効にする</h3><p class="mt-1.5 text-sm leading-6 text-[#627895]">管理画面の右上にある「デベロッパーモード」をオンにします。</p></div>
             </li>
-            <li class="flex gap-4 rounded-2xl bg-slate-50 p-4 sm:p-5">
-              <span class="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-white text-sm font-semibold text-slate-700 shadow-sm">4</span>
-              <div><h3 class="font-medium">展開したフォルダを選ぶ</h3><p class="mt-1 text-sm leading-6 text-slate-600">「パッケージ化されていない拡張機能を読み込む」を押し、<code class="rounded bg-slate-200/70 px-1.5 py-0.5 text-xs">manifest.json</code> が入っているフォルダを選びます。</p></div>
+            <li class="flex gap-4 rounded-2xl border border-[#e0e9f3] bg-[#f9fbfe] p-4 sm:p-5">
+              <span class="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-white text-sm font-bold text-[#466a95] shadow-[0_4px_12px_rgba(47,77,117,0.09)]">4</span>
+              <div><h3 class="font-semibold text-[#193452]">展開したフォルダを選ぶ</h3><p class="mt-1.5 text-sm leading-6 text-[#627895]">「パッケージ化されていない拡張機能を読み込む」を押し、<code class="rounded bg-[#e8eff7] px-1.5 py-0.5 text-xs">manifest.json</code> が入っているフォルダを選びます。</p></div>
             </li>
-            <li class="flex gap-4 rounded-2xl bg-slate-50 p-4 sm:p-5">
-              <span class="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-white text-sm font-semibold text-slate-700 shadow-sm">5</span>
-              <div><h3 class="font-medium">StudyUsを再読み込みする</h3><p class="mt-1 text-sm leading-6 text-slate-600">このページを閉じてStudyUsを再読み込みすれば、設定完了です。</p></div>
+            <li class="flex gap-4 rounded-2xl border border-[#e0e9f3] bg-[#f9fbfe] p-4 sm:p-5">
+              <span class="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-white text-sm font-bold text-[#466a95] shadow-[0_4px_12px_rgba(47,77,117,0.09)]">5</span>
+              <div><h3 class="font-semibold text-[#193452]">StudyUsを再読み込みする</h3><p class="mt-1.5 text-sm leading-6 text-[#627895]">このページを閉じてStudyUsを再読み込みすれば、設定完了です。</p></div>
             </li>
           </ol>
         </div>
       </section>
 
-      <aside class="mt-6 rounded-2xl border border-amber-200 bg-amber-50 px-5 py-4 text-sm leading-6 text-amber-900">
+      <aside class="mt-6 rounded-2xl border border-[#ead9ab] bg-[#fffaf0]/90 px-5 py-4 text-sm leading-6 text-[#735b28] shadow-[0_8px_24px_rgba(112,88,35,0.06)]">
         <h2 class="font-semibold">フォルダは移動・削除しないでください</h2>
-        <p class="mt-1 text-amber-800">Chromeは展開したフォルダから拡張機能を読み込み続けます。更新版を入れた場合は、管理画面で拡張機能の再読み込みボタンを押してください。</p>
+        <p class="mt-1 text-[#826a36]">Chromeは展開したフォルダから拡張機能を読み込み続けます。更新版を入れた場合は、管理画面で拡張機能の再読み込みボタンを押してください。</p>
       </aside>
 
-      <p class="mt-6 text-center text-xs leading-5 text-slate-500">この拡張機能は、閲覧中タブの情報をStudyUsページへ通知するために使用します。音声やカメラ映像にはアクセスしません。</p>
+      <p class="mt-6 text-center text-xs leading-5 text-[#71849f]">この拡張機能は閲覧中タブの情報をStudyUsへ通知します。音声やカメラ映像にはアクセスしません。</p>
     </main>
 
     <script type="module" src="/src/extension-download.js"></script>
