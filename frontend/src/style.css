@@ -1,1 +1,89 @@
 @import "tailwindcss";
+
+:root {
+  font-family: Inter, "Noto Sans JP", "Yu Gothic UI", "Hiragino Kaku Gothic ProN", Meiryo, sans-serif;
+  color: #102749;
+  background: #f6f9fd;
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  min-width: 320px;
+  min-height: 100%;
+}
+
+body {
+  margin: 0;
+}
+
+button,
+input {
+  font: inherit;
+}
+
+::selection {
+  background: #cbdff6;
+  color: #102749;
+}
+
+.studyus-page {
+  background:
+    radial-gradient(circle at 14% 5%, rgba(220, 233, 248, 0.95), transparent 30rem),
+    radial-gradient(circle at 87% 20%, rgba(241, 246, 252, 0.95), transparent 27rem),
+    linear-gradient(145deg, #fbfdff 0%, #f4f8fc 56%, #eef5fb 100%);
+}
+
+.studyus-page::before {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  content: "";
+  background-image: linear-gradient(rgba(92, 121, 159, 0.025) 1px, transparent 1px);
+  background-size: 100% 28px;
+  mask-image: linear-gradient(to bottom, transparent, black 18%, black 80%, transparent);
+}
+
+.studyus-card {
+  isolation: isolate;
+}
+
+.soft-orb {
+  position: absolute;
+  border-radius: 9999px;
+  filter: blur(2px);
+  pointer-events: none;
+}
+
+.soft-orb-left {
+  left: -10rem;
+  bottom: -12rem;
+  width: 32rem;
+  height: 32rem;
+  background: rgba(216, 231, 247, 0.55);
+}
+
+.soft-orb-right {
+  right: -13rem;
+  top: -15rem;
+  width: 38rem;
+  height: 38rem;
+  border: 1px solid rgba(157, 182, 213, 0.25);
+  background: rgba(255, 255, 255, 0.55);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    scroll-behavior: auto !important;
+    transition-duration: 0.01ms !important;
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+  }
+}

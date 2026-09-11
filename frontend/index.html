@@ -3,56 +3,99 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="友達と勉強中の気配を共有できるStudyUs" />
     <title>StudyUs</title>
   </head>
-  
-  <body>
-    <main class="flex min-h-screen items-center justify-center px-6">
-      <section id="join-screen" class="w-full max-w-3xl">
-        <header class="mb-10 text-center">
-          <h1 class="text-3xl font-semibold tracking-tight text-gray-900">StudyUs</h1>
-          <p class="mt-2 text-sm text-gray-500">一人じゃない</p>
-        </header>
 
-        <div class="rounded-2xl bg-white p-6">
-          <label for="username" class="block text-sm font-medium text-gray-700">ユーザーネーム</label>
+  <body class="studyus-page min-h-screen text-[#102749] antialiased">
+    <main class="relative flex min-h-screen items-center justify-center overflow-hidden px-5 py-8 sm:px-8 sm:py-12">
+      <div aria-hidden="true" class="soft-orb soft-orb-left"></div>
+      <div aria-hidden="true" class="soft-orb soft-orb-right"></div>
 
-          <input id="username" type="text" placeholder="名前を入力" class="mt-2 w-full rounded-xl border border-gray-200 bg-gray-50 px-4 py-3 text-sm outline-none focus:border-gray-400"/>
+      <section id="join-screen" class="relative w-full max-w-[560px]">
+        <div class="studyus-card overflow-hidden rounded-[30px] border border-white/90 bg-white/90 shadow-[0_24px_70px_rgba(49,79,127,0.14)] backdrop-blur-sm">
+          <div class="relative overflow-hidden border-b border-[#dfe8f4] px-7 py-7 sm:px-10 sm:py-9">
+            <div aria-hidden="true" class="absolute -right-12 -top-16 h-52 w-52 rounded-full bg-[#e9f2ff]"></div>
+            <div aria-hidden="true" class="absolute -right-2 top-16 h-28 w-28 rounded-full bg-[#f8fbff]"></div>
 
-          <button id="join-button" type="button" class="mt-4 w-full rounded-xl bg-gray-900 px-4 py-3 text-sm font-medium text-white hover:bg-gray-800">ルームに参加</button>
-
-          <p class="mt-4 text-center text-xs leading-5 text-gray-400">
-            カメラ映像が他の参加者に
-            共有されることはありません
-          </p>
-
-          <div class="mt-5 border-t border-gray-100 pt-5 text-center">
-            <a href="/extension-download.html" class="text-sm font-medium text-gray-600 underline decoration-gray-300 underline-offset-4 transition hover:text-gray-900">
-              サボり検知用Chrome拡張機能を設定する
-            </a>
-          </div>
-
-          <div id="extension-warning" role="status" class="mt-4 hidden rounded-xl border border-amber-200 bg-amber-50 px-4 py-3 text-sm leading-6 text-amber-900">
-            Chrome拡張機能を確認できません。参加はできますが、ステータスは「判定できません」と表示されます。
-            <a href="/extension-download.html" class="font-semibold underline underline-offset-2">設定方法を見る</a>
-          </div>
-          <div class="mt-6 flex justify-center">
-            <div class="fixed -left-[9999px] top-0 h-40 w-40">
-              <svg id="local-avatar" class="h-full w-full"></svg>
+            <div class="relative flex items-center gap-3">
+              <span class="flex h-11 w-11 items-center justify-center rounded-2xl bg-[#102749] text-white shadow-[0_8px_20px_rgba(16,39,73,0.18)]">
+                <svg aria-hidden="true" viewBox="0 0 24 24" class="h-6 w-6 fill-none stroke-current" stroke-width="1.7">
+                  <path d="M4.5 5.5c2.9-.8 5.4-.2 7.5 1.5v12c-2.1-1.7-4.6-2.3-7.5-1.5v-12Zm15 0c-2.9-.8-5.4-.2-7.5 1.5v12c2.1-1.7 4.6-2.3 7.5-1.5v-12Z" stroke-linecap="round" stroke-linejoin="round" />
+                </svg>
+              </span>
+              <h1 class="text-[2rem] font-bold tracking-[-0.035em] text-[#102749]">StudyUs</h1>
             </div>
           </div>
 
-          <video id="camera" autoplay playsinline muted class="hidden"></video>
+          <div class="px-7 py-8 sm:px-10 sm:py-10">
+            <label for="username" class="block text-sm font-semibold text-[#183253]">ユーザーネーム</label>
+
+            <div class="mt-3 flex items-center rounded-2xl border border-[#cad8e9] bg-[#fbfdff] px-4 shadow-[inset_0_1px_2px_rgba(16,39,73,0.03)] transition focus-within:border-[#6d8fbe] focus-within:ring-4 focus-within:ring-[#dce9f8]">
+              <svg aria-hidden="true" viewBox="0 0 24 24" class="h-5 w-5 shrink-0 fill-none stroke-[#6c83a4]" stroke-width="1.7">
+                <circle cx="12" cy="8" r="3.5" />
+                <path d="M5.5 20c.4-4 2.6-6 6.5-6s6.1 2 6.5 6" stroke-linecap="round" />
+              </svg>
+              <input id="username" type="text" autocomplete="nickname" placeholder="名前を入力" class="min-w-0 flex-1 bg-transparent px-3 py-4 text-base text-[#102749] outline-none placeholder:text-[#8b9bb3]" />
+            </div>
+
+            <button id="join-button" type="button" class="mt-5 flex w-full items-center justify-center gap-3 rounded-2xl bg-gradient-to-r from-[#18375f] to-[#3f6898] px-5 py-4 text-base font-semibold text-white shadow-[0_14px_30px_rgba(36,75,121,0.24)] transition hover:-translate-y-0.5 hover:shadow-[0_17px_34px_rgba(36,75,121,0.29)] focus:outline-none focus:ring-4 focus:ring-[#b9d0ea] active:translate-y-0">
+              ルームに参加
+              <svg aria-hidden="true" viewBox="0 0 24 24" class="h-5 w-5 fill-none stroke-current" stroke-width="1.8"><path d="M5 12h13m-5-5 5 5-5 5" stroke-linecap="round" stroke-linejoin="round" /></svg>
+            </button>
+
+            <p class="mt-6 flex items-start justify-center gap-2 text-center text-sm leading-6 text-[#71849f]">
+              <svg aria-hidden="true" viewBox="0 0 24 24" class="mt-0.5 h-4 w-4 shrink-0 fill-current"><path d="M12 2a5 5 0 0 0-5 5v2H6a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-9a2 2 0 0 0-2-2h-1V7a5 5 0 0 0-5-5Zm3 7H9V7a3 3 0 0 1 6 0v2Z" /></svg>
+              カメラ映像が他の参加者に共有されることはありません
+            </p>
+
+            <div class="mt-7 border-t border-[#e3ebf4] pt-6 text-center">
+              <a href="/extension-download.html" class="text-sm font-medium text-[#48678e] underline decoration-[#9fb2ca] underline-offset-4 transition hover:text-[#102749]">
+                サボり検知用Chrome拡張機能を設定する
+              </a>
+            </div>
+
+            <div id="extension-warning" role="status" class="mt-5 hidden rounded-2xl border border-[#f0dca6] bg-[#fffaf0] px-4 py-3.5 text-sm leading-6 text-[#765b22]">
+              Chrome拡張機能を確認できません。参加はできますが、ステータスは「判定できません」と表示されます。
+              <a href="/extension-download.html" class="font-semibold underline underline-offset-2">設定方法を見る</a>
+            </div>
+
+            <div class="fixed -left-[9999px] top-0 h-40 w-40">
+              <svg id="local-avatar" class="h-full w-full"></svg>
+            </div>
+            <video id="camera" autoplay playsinline muted class="hidden"></video>
+          </div>
         </div>
+
       </section>
 
-      <!-- 参加中の画面 -->
+      <section id="connected-screen" class="relative hidden w-full max-w-[480px] text-center">
+        <div class="studyus-card relative overflow-hidden rounded-[30px] border border-white/90 bg-white/90 px-7 py-10 shadow-[0_24px_70px_rgba(49,79,127,0.14)] backdrop-blur-sm sm:px-12 sm:py-12">
+          <div aria-hidden="true" class="absolute -bottom-20 -left-16 h-48 w-48 rounded-full bg-[#eaf2fc]"></div>
+          <div aria-hidden="true" class="absolute -bottom-24 right-0 h-52 w-52 rounded-full bg-[#f3f7fc]"></div>
 
-      <section id="connected-screen" class="hidden w-full max-w-sm text-center">
-        <h1  class="text-3xl font-semibold tracking-tight text-gray-900">StudyUs</h1>
-        <p class="mt-3 text-sm text-gray-500">ルームに参加中</p>
-        <p id="connected-username" class="mt-6 text-lg font-medium text-gray-900"></p>
-        <button id="leave-button" type="button" class="mt-8 w-full rounded-xl border border-gray-200 bg-white px-4 py-3 text-sm font-medium text-gray-700 hover:bg-gray-50">ルームから退出</button>
+          <div class="relative">
+            <div class="mx-auto flex h-12 w-12 items-center justify-center rounded-2xl bg-[#102749] text-white shadow-[0_9px_22px_rgba(16,39,73,0.18)]">
+              <svg aria-hidden="true" viewBox="0 0 24 24" class="h-7 w-7 fill-none stroke-current" stroke-width="1.7"><path d="M4.5 5.5c2.9-.8 5.4-.2 7.5 1.5v12c-2.1-1.7-4.6-2.3-7.5-1.5v-12Zm15 0c-2.9-.8-5.4-.2-7.5 1.5v12c2.1-1.7 4.6-2.3 7.5-1.5v-12Z" stroke-linecap="round" stroke-linejoin="round" /></svg>
+            </div>
+            <h1 class="mt-4 text-3xl font-bold tracking-[-0.035em] text-[#102749]">StudyUs</h1>
+
+            <div class="mx-auto mt-7 flex h-28 w-28 items-center justify-center rounded-full border-8 border-[#edf4fc] bg-gradient-to-br from-[#dce9f8] to-[#f7faff] shadow-[0_12px_30px_rgba(55,84,125,0.14)]">
+              <span class="relative flex h-14 w-14 items-center justify-center rounded-full bg-white text-[#41658f]">
+                <svg aria-hidden="true" viewBox="0 0 24 24" class="h-8 w-8 fill-none stroke-current" stroke-width="1.6"><circle cx="12" cy="8" r="3.5" /><path d="M5.5 20c.4-4 2.6-6 6.5-6s6.1 2 6.5 6" stroke-linecap="round" /></svg>
+                <span class="absolute -bottom-1 -right-1 h-5 w-5 rounded-full border-[3px] border-white bg-emerald-600 shadow-sm"></span>
+              </span>
+            </div>
+
+            <p id="connected-username" class="mt-5 text-xl font-bold text-[#102749]"></p>
+            <p class="mt-1.5 flex items-center justify-center gap-2 text-base font-semibold text-[#466482]"><span class="h-3 w-3 rounded-full bg-emerald-600 shadow-[0_0_0_4px_rgba(22,163,74,0.12)]"></span>ルームに参加中</p>
+
+            <button id="leave-button" type="button" class="mt-10 flex w-full items-center justify-center gap-2 rounded-2xl border border-[#ef6b72] bg-white/80 px-5 py-3.5 text-base font-semibold text-[#df4f58] transition hover:bg-[#fff6f6] focus:outline-none focus:ring-4 focus:ring-[#f9d6d8]">
+              <svg aria-hidden="true" viewBox="0 0 24 24" class="h-5 w-5 fill-none stroke-current" stroke-width="1.8"><path d="M14 5h5v14h-5M10 8l-4 4 4 4M6 12h9" stroke-linecap="round" stroke-linejoin="round" /></svg>
+              ルームから退出
+            </button>
+          </div>
+        </div>
       </section>
     </main>
 

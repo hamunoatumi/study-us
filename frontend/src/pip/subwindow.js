@@ -27,29 +27,26 @@ export async function openSubWindow(participants) {
     copyStylesToPip()       // tailwindcssをpipに適応
 
     pipWindow.document.body.innerHTML = `
-  <main class="flex h-screen flex-col overflow-hidden bg-[#F5F5F7] text-gray-900">
-    <header class="flex h-11 shrink-0 items-center border-b border-black/5 bg-white px-3">
-      <h1 class="mr-3 text-[14px] font-semibold tracking-tight">StudyUs</h1>
-
-      <div class="flex items-center gap-2 text-[10px] text-gray-500">
-        <span class="flex items-center gap-1">
-          <span class="h-1.5 w-1.5 rounded-full bg-green-500"></span>
-          勉強中
-        </span>
-        <span class="flex items-center gap-1">
-          <span class="h-1.5 w-1.5 rounded-full bg-red-500"></span>
-          サボり
-        </span>
-        <span class="flex items-center gap-1">
-          <span class="h-1.5 w-1.5 rounded-full bg-gray-400"></span>
-          離席中
-        </span>
-      </div>
-
-      <span id="participant-count" class="ml-auto text-[10px] text-gray-400"></span>
+  <main class="flex h-screen flex-col overflow-hidden bg-[#f5f8fc] text-[#102749]">
+    <header class="flex h-12 shrink-0 items-center bg-gradient-to-r from-[#102749] to-[#284c78] px-4 text-white shadow-sm">
+      <span class="mr-2 flex h-6 w-6 items-center justify-center rounded-lg bg-white/10">
+        <svg aria-hidden="true" viewBox="0 0 24 24" class="h-4 w-4 fill-none stroke-current" stroke-width="1.7">
+          <path d="M4.5 5.5c2.9-.8 5.4-.2 7.5 1.5v12c-2.1-1.7-4.6-2.3-7.5-1.5v-12Zm15 0c-2.9-.8-5.4-.2-7.5 1.5v12c2.1-1.7 4.6-2.3 7.5-1.5v-12Z" stroke-linecap="round" stroke-linejoin="round" />
+        </svg>
+      </span>
+      <h1 class="text-[14px] font-semibold tracking-tight">StudyUs</h1>
     </header>
 
-    <section id="participants" class="min-h-0 flex-1 p-2"></section>
+    <div class="flex h-9 shrink-0 items-center border-b border-[#dde7f2] bg-white/90 px-3">
+      <div class="flex items-center gap-2.5 text-[10px] font-medium text-[#607796]">
+        <span class="flex items-center gap-1"><span class="h-2 w-2 rounded-full bg-emerald-600"></span>勉強中</span>
+        <span class="flex items-center gap-1"><span class="h-2 w-2 rounded-full bg-rose-600"></span>サボり</span>
+        <span class="flex items-center gap-1"><span class="h-2 w-2 rounded-full bg-slate-500"></span>離席中</span>
+      </div>
+      <span id="participant-count" class="ml-auto text-[10px] font-medium text-[#71849f]"></span>
+    </div>
+
+    <section id="participants" class="min-h-0 flex-1 p-2.5"></section>
   </main>
 `
 
