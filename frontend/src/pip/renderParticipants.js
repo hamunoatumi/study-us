@@ -58,9 +58,18 @@ export function renderParticipants(participants, pipWindow) {
     nameElement.className = 'max-w-full truncate text-sm font-semibold text-gray-900';
     nameElement.textContent = participant.name;
 
+    const statusElement = pipWindow.document.createElement('div');
+    statusElement.className = 'mt-0.5 flex items-center gap-1 text-[10px] font-medium text-gray-600';
+    const statusDotElement = pipWindow.document.createElement('span');
+    statusDotElement.className = `h-1.5 w-1.5 rounded-full ${status.dotClass ?? 'bg-gray-400'}`;
+    const statusLabelElement = pipWindow.document.createElement('span');
+    statusLabelElement.textContent = status.label;
+    statusElement.append(statusDotElement, statusLabelElement);
+
     // カードへ追加
     participantElement.appendChild(avatarElement);
     participantElement.appendChild(nameElement);
+    participantElement.appendChild(statusElement);
 
     // PiPへ追加
     participantsElement.appendChild(participantElement);

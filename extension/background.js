@@ -38,6 +38,17 @@ async function notifyStudyUs(tab) {
   )
 }
 
+chrome.runtime.onMessage.addListener(message => {
+  if (message?.type !== 'REQUEST_ACTIVE_TAB') return
+
+  chrome.tabs.query({ active: true, currentWindow: true }).then(([activeTab]) => {
+    if (!activeTab) return
+    return notifyStudyUs(activeTab)
+  }).catch(error => {
+    console.error('[StudyUs] Failed to send current tab.', error)
+  })
+})
+
 chrome.tabs.onActivated.addListener(async ({ tabId }) => {
   try {
     const tab = await chrome.tabs.get(tabId)

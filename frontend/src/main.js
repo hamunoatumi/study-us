@@ -5,9 +5,18 @@ import { connectRoom, joinRoom, subscribeRoomEvents, startHeartbeat, leaveRoom }
 import { startTabActivitySync } from './integration/tabActivitySync.js'
 import { startLocalAvatar } from './integration/localAvatar.js'
 import { updatePipAvatarPose } from './pip/pipAvatar.js'
+import { checkStudyUsExtension } from './extension/receiveStudyUsTabInfo.js'
 
 let currentSocket = null  // 退出処理で使用
 let currentAvatarController = null  // 退出処理(カメラ、pip)で使用
+let stopCurrentTabActivitySync = null
+
+const extensionWarning = document.querySelector('#extension-warning')
+const updateExtensionWarning = (available) => {
+  extensionWarning.classList.toggle('hidden', available)
+}
+
+void checkStudyUsExtension().then(updateExtensionWarning)
 
 setupHome(
 
@@ -22,7 +31,10 @@ setupHome(
     currentSocket = socket
 
     startHeartbeat(socket)
-    startTabActivitySync(socket)
+    stopCurrentTabActivitySync = startTabActivitySync(
+      socket,
+      updateExtensionWarning,
+    )
 
     const video = document.querySelector('#camera')
     const svg = document.querySelector('#local-avatar')
@@ -32,7 +44,7 @@ setupHome(
     const me = {
       id: snapshot.selfUserId,
       name: username,
-      status: 'studying',
+      status: 'unknown',
       avatarId: 'haru'
     }
 
@@ -146,11 +158,13 @@ setupHome(
 
   // カメラ・顔追跡を停止
   currentAvatarController?.destroy()
+  stopCurrentTabActivitySync?.()
 
   closeSubWindow()
 
   currentSocket = null
   currentAvatarController = null
+  stopCurrentTabActivitySync = null
 }
 
 )

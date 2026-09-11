@@ -1,6 +1,7 @@
 export const PROTOCOL_VERSION = 1 as const
 
 export const PARTICIPANT_STATUSES = [
+  'unknown',
   'studying',
   'distracted',
   'away',
@@ -38,6 +39,10 @@ export type ActiveTabPayload = {
   hostname: string
 }
 
+export type ActivityMonitoringPayload = {
+  available: boolean
+}
+
 export type AvatarTrackingPayload = {
   faceDetected: boolean
 }
@@ -53,6 +58,10 @@ export type ParticipantSnapshot = {
 export type RoomJoinMessage = ProtocolEnvelope<'room.join', RoomJoinPayload>
 export type RoomLeaveMessage = ProtocolEnvelope<'room.leave', Record<string, never>>
 export type ActiveTabMessage = ProtocolEnvelope<'activity.tab', ActiveTabPayload>
+export type ActivityMonitoringMessage = ProtocolEnvelope<
+  'activity.monitoring',
+  ActivityMonitoringPayload
+>
 export type AvatarPoseMessage = ProtocolEnvelope<'avatar.pose', AvatarPosePayload>
 export type AvatarTrackingMessage = ProtocolEnvelope<
   'avatar.tracking',
@@ -64,6 +73,7 @@ export type ClientToServerMessage =
   | RoomJoinMessage
   | RoomLeaveMessage
   | ActiveTabMessage
+  | ActivityMonitoringMessage
   | AvatarPoseMessage
   | AvatarTrackingMessage
   | HeartbeatMessage

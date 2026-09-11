@@ -64,8 +64,9 @@ npm run demo
 1. ルームのスナップショットと参加通知
 2. アバター姿勢の転送
 3. YouTube閲覧による`distracted`への変更
-4. 顔検出喪失による`away`への変更
-5. 明示的な退出による`participant.left`
+4. 拡張機能の応答喪失による`unknown`への変更
+5. 顔検出喪失による`away`への変更
+6. 明示的な退出による`participant.left`
 
 接続先を変える場合は`WS_URL`を指定する。
 

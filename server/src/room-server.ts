@@ -24,7 +24,8 @@ type Session = {
   avatarId: string | null
   status: ParticipantStatus
   pose: AvatarPosePayload | null
-  hostname: string
+  hostname: string | null
+  activityMonitoringAvailable: boolean
   faceDetected: boolean
   lastHeartbeatAt: number
   lastClientSeq: number
@@ -69,9 +70,10 @@ export class StudyUsRoomServer {
       joined: false,
       username: null,
       avatarId: null,
-      status: 'studying',
+      status: 'unknown',
       pose: null,
-      hostname: '',
+      hostname: null,
+      activityMonitoringAvailable: false,
       faceDetected: true,
       lastHeartbeatAt: Date.now(),
       lastClientSeq: -1,
@@ -138,6 +140,12 @@ export class StudyUsRoomServer {
     switch (message.type) {
       case 'activity.tab':
         session.hostname = message.payload.hostname
+        session.activityMonitoringAvailable = true
+        this.#updateStatus(session)
+        break
+      case 'activity.monitoring':
+        session.activityMonitoringAvailable = message.payload.available
+        if (!message.payload.available) session.hostname = null
         this.#updateStatus(session)
         break
       case 'avatar.pose':
@@ -257,7 +265,9 @@ export class StudyUsRoomServer {
   #updateStatus(session: Session): void {
     const nextStatus: ParticipantStatus = !session.faceDetected
       ? 'away'
-      : isBannedHostname(session.hostname, this.#config.bannedHostnames)
+      : !session.activityMonitoringAvailable || session.hostname === null
+        ? 'unknown'
+        : isBannedHostname(session.hostname, this.#config.bannedHostnames)
         ? 'distracted'
         : 'studying'
 
