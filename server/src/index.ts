@@ -10,9 +10,14 @@ import { isOriginAllowed, loadServerConfig } from './config.js'
 import { streamExtensionPackage } from './extension-package.js'
 import { StudyUsRoomServer } from './room-server.js'
 
-const localEnvPath = resolve(process.cwd(), '.env')
-if (existsSync(localEnvPath)) {
-  loadEnvFile(localEnvPath)
+const environmentPaths = [
+  resolve(process.cwd(), '.env'),
+  resolve(process.cwd(), '..', '.env'),
+]
+for (const environmentPath of environmentPaths) {
+  if (existsSync(environmentPath)) {
+    loadEnvFile(environmentPath)
+  }
 }
 
 const config = loadServerConfig()

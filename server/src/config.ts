@@ -58,7 +58,16 @@ const parseBannedHostnames = (value: string | undefined): ReadonlySet<string> =>
 export const loadServerConfig = (
   environment: NodeJS.ProcessEnv = process.env,
 ): ServerConfig => {
-  const allowedOrigins = parseAllowedOrigins(environment.ALLOWED_ORIGINS)
+  const publicAppOrigins = parseAllowedOrigins(
+    environment.PUBLIC_APP_ORIGIN,
+    'PUBLIC_APP_ORIGIN',
+  )
+  const configuredAllowedOrigins = parseAllowedOrigins(
+    environment.ALLOWED_ORIGINS,
+  )
+  const allowedOrigins = configuredAllowedOrigins.size > 0
+    ? configuredAllowedOrigins
+    : publicAppOrigins
   const configuredExtensionOrigins = parseAllowedOrigins(
     environment.EXTENSION_ALLOWED_ORIGINS,
     'EXTENSION_ALLOWED_ORIGINS',
