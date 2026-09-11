@@ -7,9 +7,7 @@ const websocketUrl =
 // WebSocketサーバーへ接続
 export function connectRoom() {
   return new Promise((resolve, reject) => {
-
-    const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:'
-    const socket = new WebSocket(`${protocol}//${window.location.host}/ws`)
+    const socket = new WebSocket(websocketUrl)
 
     // このsocketの送信seqを0から開始
     nextSeqBySocket.set(socket, 0)
