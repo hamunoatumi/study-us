@@ -40,13 +40,6 @@ const POSE_BROADCAST_INTERVAL_MS = 1_000 / 15
 const POSE_BACKPRESSURE_BYTES = 64 * 1024
 const DISCONNECT_BACKPRESSURE_BYTES = 1024 * 1024
 
-// アバター重複なしのため
-const AVATAR_IDS = [
-  'kaito',
-  'haru',
-  'ren',
-  'sota',
-] as const
 
 export class StudyUsRoomServer {
   readonly #webSocketServer: WebSocketServer
@@ -192,34 +185,13 @@ export class StudyUsRoomServer {
       this.#sendError(session, 'ROOM_FULL', 'ルームの参加上限に達しています', relatedSeq)
       return
     }
-    // アバター重複無し
-    const usedAvatarIds =
-    [...this.#participants]
-    .map((participant) => participant.avatarId)
-    .filter((avatarId): avatarId is string => avatarId !== null)
-
-    const availableAvatarIds =
-    AVATAR_IDS.filter((avatarId) =>
-      !usedAvatarIds.includes(avatarId)
-  )
-
-    if (availableAvatarIds.length === 0) {
-      this.#sendError(session, 'NO_AVATAR_AVAILABLE', '利用できるアバターがありません', relatedSeq,)
-    return }
-
-    const avatarId =
-    availableAvatarIds[
-      Math.floor(
-        Math.random() * availableAvatarIds.length
-      )
-    ]!
 
     const existingParticipants = [...this.#participants].map((member) =>
       this.#snapshot(member),
     )
     session.joined = true
     session.username = payload.username
-    session.avatarId = avatarId
+    session.avatarId = payload.avatarId
     this.#participants.add(session)
 
     this.#send(session, 'room.snapshot', {
