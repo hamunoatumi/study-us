@@ -1,6 +1,7 @@
 importScripts('config.js')
 
 const studyUsPagePatterns = globalThis.STUDYUS_PAGE_PATTERNS
+const ACTIVE_TAB_RESULT = 'ACTIVE_TAB_RESULT'
 
 function createTabPayload(tab) {
   if (!tab.url) return null
@@ -38,15 +39,31 @@ async function notifyStudyUs(tab) {
   )
 }
 
-chrome.runtime.onMessage.addListener(message => {
+chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
   if (message?.type !== 'REQUEST_ACTIVE_TAB') return
 
-  chrome.tabs.query({ active: true, currentWindow: true }).then(([activeTab]) => {
-    if (!activeTab) return
-    return notifyStudyUs(activeTab)
+  const query = {
+    active: true,
+    ...(Number.isInteger(sender.tab?.windowId)
+      ? { windowId: sender.tab.windowId }
+      : { lastFocusedWindow: true }),
+  }
+
+  chrome.tabs.query(query).then(([activeTab]) => {
+    sendResponse({
+      type: ACTIVE_TAB_RESULT,
+      payload: activeTab ? createTabPayload(activeTab) : null,
+    })
   }).catch(error => {
-    console.error('[StudyUs] Failed to send current tab.', error)
+    console.error('[StudyUs] Failed to get current tab.', error)
+    sendResponse({
+      type: ACTIVE_TAB_RESULT,
+      payload: null,
+    })
   })
+
+  // chrome.tabs.queryの完了までメッセージチャネルを保持する
+  return true
 })
 
 chrome.tabs.onActivated.addListener(async ({ tabId }) => {
