@@ -9,8 +9,25 @@ export const avatarPresets: AvatarPreset[] = [
   { id: 'sota', name: 'Sota', hairStyle: 'up-bang', eyeColor: '#946430', glasses: true, appearance: { hairColor: '#4d382e', shirtColor: '#bd763c', skinColor: '#d69a75' } },
 ]
 
-export function getRandomAvatarPreset(): AvatarPreset {
-  const randomIndex = Math.floor(Math.random() * avatarPresets.length)
+export function getRandomAvatarPreset(
+  usedAvatarIds: string[] = [],
+): AvatarPreset {
+  const availablePresets =
+    avatarPresets.filter(
+      (preset) =>
+        !usedAvatarIds.includes(preset.id)
+    )
 
-  return avatarPresets[randomIndex]!
+  if (availablePresets.length === 0) {
+    throw new Error(
+      '利用できるアバターがありません'
+    )
+  }
+
+  const randomIndex =
+    Math.floor(
+      Math.random() * availablePresets.length
+    )
+
+  return availablePresets[randomIndex]!
 }

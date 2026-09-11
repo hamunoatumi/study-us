@@ -48,16 +48,25 @@ setupHome(
       status: 'unknown'
     }
 
-    // 他の参加者
-    const others = snapshot.participants.map((participant) => ({
-      id: participant.userId,
-      name: participant.username,
-      status: participant.status,
-      avatarId: participant.avatarId
-    }))
-
     // PiP用参加者一覧
-    const participants = [me, ...others]
+    const participants = [me]
+
+    for (const participant of snapshot.participants) {
+      const usedAvatarIds =
+        participants.map(
+          (participant) =>
+            participant.avatarId
+        )
+
+      const avatar = getRandomAvatarPreset(usedAvatarIds)
+
+      participants.push({
+        id: participant.userId,
+        name: participant.username,
+        status: participant.status,
+        avatarId: avatar.id
+      })
+    }
 
     // 状態や姿勢の送信を始める前に受信を開始する
     subscribeRoomEvents(socket, {
@@ -77,7 +86,7 @@ setupHome(
           id: participant.userId,
           name: participant.username,
           status: participant.status,
-          avatarId: participant.avatarId
+          avatarId: avatarId
         })
 
         updateParticipants(participants)
