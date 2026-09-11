@@ -84,8 +84,7 @@ export function createSvgAvatarRenderer(svg: SVGSVGElement, options: SvgAvatarRe
         </g>
         <g data-part="hair">${hair.foreground}</g>
       </g>
-    </g>
-    <g transform="translate(49 48)"><circle cx="8" cy="8" r="8" fill="#3ec989"/><circle cx="8" cy="8" r="3" fill="#e3fff1"/><text x="25" y="14" fill="#2b304a" font-family="Inter,system-ui,sans-serif" font-size="17" font-weight="700">${name}</text></g>`
+    </g>`
 
   const head = svg.querySelector<SVGGElement>('[data-part="head"]')
   const faceFeatures = svg.querySelector<SVGGElement>('[data-part="face-features"]')
