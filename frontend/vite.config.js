@@ -38,7 +38,7 @@ export default defineConfig(({ mode }) => {
       tailwindcss(),
     ],
     server: {
-      allowedHosts:['steadier-easing-provolone.ngrok-free.dev'],
+      allowedHosts,
       proxy: {
         '/ws': {
           target: serverProxyTarget,
