@@ -162,7 +162,8 @@ Canvas描画、画面側の呼び出し方は変更しない。
 
 - `server/src/extension-package.ts`
   - 拡張機能テンプレートの読み込み
-  - `ALLOWED_ORIGINS`を反映した`manifest.json`と`config.js`の生成
+  - `EXTENSION_ALLOWED_ORIGINS`（未設定時は`ALLOWED_ORIGINS`）を反映した
+    `manifest.json`と`config.js`の生成
   - ZIPを一時ファイルとして残さずHTTPレスポンスへ直接出力
 
 アーカイブにはタブ情報やカメラ情報などの利用者データを含めない。

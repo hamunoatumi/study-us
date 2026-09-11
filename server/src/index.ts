@@ -24,7 +24,7 @@ app.get('/health', (_request, response) => {
 
 app.get('/extension/download', async (_request, response) => {
   try {
-    await streamExtensionPackage(response, config.allowedOrigins)
+    await streamExtensionPackage(response, config.extensionAllowedOrigins)
   } catch (error) {
     console.error('拡張機能のZIP生成に失敗しました', error)
 

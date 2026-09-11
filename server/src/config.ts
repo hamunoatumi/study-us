@@ -2,6 +2,7 @@ export type ServerConfig = {
   port: number
   websocketPath: string
   allowedOrigins: ReadonlySet<string>
+  extensionAllowedOrigins: ReadonlySet<string>
   bannedHostnames: ReadonlySet<string>
   heartbeatTimeoutMs: number
   disconnectTimeoutMs: number
@@ -21,7 +22,10 @@ const parsePositiveInteger = (
 const normalizeHostname = (hostname: string): string =>
   hostname.trim().toLowerCase().replace(/\.$/u, '')
 
-const parseAllowedOrigins = (value: string | undefined): ReadonlySet<string> => {
+const parseAllowedOrigins = (
+  value: string | undefined,
+  environmentVariableName = 'ALLOWED_ORIGINS',
+): ReadonlySet<string> => {
   if (value === undefined || value.trim() === '') return new Set()
 
   return new Set(value.split(',').map((configuredOrigin) => {
@@ -34,7 +38,9 @@ const parseAllowedOrigins = (value: string | undefined): ReadonlySet<string> => 
       }
       return url.origin
     } catch {
-      throw new Error(`ALLOWED_ORIGINSに不正なOriginがあります: ${origin}`)
+      throw new Error(
+        `${environmentVariableName}に不正なOriginがあります: ${origin}`,
+      )
     }
   }))
 }
@@ -52,6 +58,11 @@ const parseBannedHostnames = (value: string | undefined): ReadonlySet<string> =>
 export const loadServerConfig = (
   environment: NodeJS.ProcessEnv = process.env,
 ): ServerConfig => {
+  const allowedOrigins = parseAllowedOrigins(environment.ALLOWED_ORIGINS)
+  const configuredExtensionOrigins = parseAllowedOrigins(
+    environment.EXTENSION_ALLOWED_ORIGINS,
+    'EXTENSION_ALLOWED_ORIGINS',
+  )
   const configuredParticipantLimit = parsePositiveInteger(
     environment.MAX_PARTICIPANTS,
     100,
@@ -68,7 +79,10 @@ export const loadServerConfig = (
   return {
     port: parsePositiveInteger(environment.PORT, 3000),
     websocketPath: environment.WEBSOCKET_PATH ?? '/ws',
-    allowedOrigins: parseAllowedOrigins(environment.ALLOWED_ORIGINS),
+    allowedOrigins,
+    extensionAllowedOrigins: configuredExtensionOrigins.size > 0
+      ? configuredExtensionOrigins
+      : allowedOrigins,
     bannedHostnames: parseBannedHostnames(environment.BANNED_HOSTNAMES),
     heartbeatTimeoutMs,
     disconnectTimeoutMs: Math.max(
