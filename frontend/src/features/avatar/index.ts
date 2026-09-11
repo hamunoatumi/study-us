@@ -20,7 +20,7 @@ export type {
   SvgAvatarRenderer,
   SvgAvatarRendererOptions,
 } from './svgRenderer'
-export { avatarPresets } from './avatarPresets'
+export { avatarPresets, getRandomAvatarPreset } from './avatarPresets'
 export type { AvatarPreset } from './avatarPresets'
 export { createFaceTrackedSvgAvatarController } from './svgAvatarController'
 export type {
