@@ -30,12 +30,6 @@ setupHome(
     // 今使っているsocketを退出処理から使えるよう保存
     currentSocket = socket
 
-    startHeartbeat(socket)
-    stopCurrentTabActivitySync = startTabActivitySync(
-      socket,
-      updateExtensionWarning,
-    )
-
     const video = document.querySelector('#camera')
     const svg = document.querySelector('#local-avatar')
 
@@ -59,24 +53,7 @@ setupHome(
     // PiP用参加者一覧
     const participants = [me, ...others]
 
-    // PiP表示
-    await openSubWindow(participants)
-
-    // カメラ・アバター開始
-    currentAvatarController = await startLocalAvatar(
-      socket,
-      video,
-      svg,
-      (pose) => {
-        updatePipAvatarPose(
-          snapshot.selfUserId,
-          pose
-        )
-      }
-    )
-
-
-    // サーバーからのイベントを受信
+    // 状態や姿勢の送信を始める前に受信を開始する
     subscribeRoomEvents(socket, {
 
       // 新しい参加者
@@ -146,6 +123,28 @@ setupHome(
         updateParticipants(participants)
       }
     })
+
+    startHeartbeat(socket)
+    stopCurrentTabActivitySync = startTabActivitySync(
+      socket,
+      updateExtensionWarning,
+    )
+
+    // PiP表示
+    await openSubWindow(participants)
+
+    // カメラ・アバター開始
+    currentAvatarController = await startLocalAvatar(
+      socket,
+      video,
+      svg,
+      (pose) => {
+        updatePipAvatarPose(
+          snapshot.selfUserId,
+          pose
+        )
+      }
+    )
   },
 
 
