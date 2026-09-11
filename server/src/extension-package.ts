@@ -6,8 +6,8 @@ import { ZipArchive } from 'archiver'
 import type { Response } from 'express'
 
 const LOCAL_APP_ORIGINS = [
-  'http://localhost:5173',
-  'http://127.0.0.1:5173',
+  'http://localhost',
+  'http://127.0.0.1',
 ] as const
 
 type ContentScriptDefinition = {

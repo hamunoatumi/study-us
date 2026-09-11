@@ -10,9 +10,14 @@ import { isOriginAllowed, loadServerConfig } from './config.js'
 import { streamExtensionPackage } from './extension-package.js'
 import { StudyUsRoomServer } from './room-server.js'
 
-const localEnvPath = resolve(process.cwd(), '.env')
-if (existsSync(localEnvPath)) {
-  loadEnvFile(localEnvPath)
+const environmentPaths = [
+  resolve(process.cwd(), '.env'),
+  resolve(process.cwd(), '..', '.env'),
+]
+for (const environmentPath of environmentPaths) {
+  if (existsSync(environmentPath)) {
+    loadEnvFile(environmentPath)
+  }
 }
 
 const config = loadServerConfig()
@@ -24,7 +29,7 @@ app.get('/health', (_request, response) => {
 
 app.get('/extension/download', async (_request, response) => {
   try {
-    await streamExtensionPackage(response, config.allowedOrigins)
+    await streamExtensionPackage(response, config.extensionAllowedOrigins)
   } catch (error) {
     console.error('拡張機能のZIP生成に失敗しました', error)
 
