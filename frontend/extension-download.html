@@ -1,0 +1,80 @@
+<!doctype html>
+<html lang="ja">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="StudyUsのサボり検知用Chrome拡張機能を設定する手順" />
+    <title>Chrome拡張機能の設定 | StudyUs</title>
+  </head>
+
+  <body class="min-h-screen bg-slate-50 text-slate-900 antialiased">
+    <header class="border-b border-slate-200 bg-white/90 backdrop-blur">
+      <div class="mx-auto flex max-w-4xl items-center justify-between px-5 py-4 sm:px-8">
+        <a href="/" class="text-lg font-semibold tracking-tight text-slate-900">StudyUs</a>
+        <a href="/" class="text-sm font-medium text-slate-500 transition hover:text-slate-900">トップへ戻る</a>
+      </div>
+    </header>
+
+    <main class="mx-auto max-w-4xl px-5 py-10 sm:px-8 sm:py-14">
+      <section class="overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-sm">
+        <div class="border-b border-slate-100 px-6 py-8 sm:px-10 sm:py-10">
+          <span class="inline-flex rounded-full bg-sky-50 px-3 py-1 text-xs font-semibold text-sky-700">Desktop Chrome</span>
+          <h1 class="mt-4 text-2xl font-semibold tracking-tight sm:text-3xl">サボり検知用の拡張機能を設定</h1>
+          <p class="mt-3 max-w-2xl text-sm leading-7 text-slate-600 sm:text-base">
+            StudyUsが別タブで開かれているサイトを判定するために必要です。ZIPをダウンロードし、下の手順に沿ってChromeへ読み込んでください。
+          </p>
+
+          <a id="extension-download-link" href="/extension/download" download class="mt-7 inline-flex w-full items-center justify-center gap-2 rounded-xl bg-slate-900 px-5 py-3.5 text-sm font-semibold text-white shadow-sm transition hover:bg-slate-700 focus:outline-none focus:ring-2 focus:ring-slate-400 focus:ring-offset-2 sm:w-auto">
+            <svg aria-hidden="true" viewBox="0 0 24 24" class="h-5 w-5 fill-none stroke-current" stroke-width="1.8">
+              <path d="M12 3v12m0 0 4-4m-4 4-4-4M5 20h14" stroke-linecap="round" stroke-linejoin="round" />
+            </svg>
+            拡張機能をダウンロード
+          </a>
+        </div>
+
+        <div class="px-6 py-8 sm:px-10 sm:py-10">
+          <h2 class="text-lg font-semibold">Chromeへの読み込み方</h2>
+          <ol class="mt-6 grid gap-4">
+            <li class="flex gap-4 rounded-2xl bg-slate-50 p-4 sm:p-5">
+              <span class="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-white text-sm font-semibold text-slate-700 shadow-sm">1</span>
+              <div><h3 class="font-medium">ZIPを展開する</h3><p class="mt-1 text-sm leading-6 text-slate-600">ダウンロードした <code class="rounded bg-slate-200/70 px-1.5 py-0.5 text-xs">study-us-extension.zip</code> を右クリックし、「すべて展開」を選びます。</p></div>
+            </li>
+            <li class="flex gap-4 rounded-2xl bg-slate-50 p-4 sm:p-5">
+              <span class="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-white text-sm font-semibold text-slate-700 shadow-sm">2</span>
+              <div class="min-w-0 flex-1">
+                <h3 class="font-medium">拡張機能の管理画面を開く</h3>
+                <p class="mt-1 text-sm leading-6 text-slate-600">次の文字列をChromeのアドレス欄へ貼り付けて開きます。</p>
+                <div class="mt-3 flex items-center gap-2 rounded-xl border border-slate-200 bg-white p-2 pl-3">
+                  <code class="min-w-0 flex-1 truncate text-sm text-slate-700">chrome://extensions</code>
+                  <button id="copy-extensions-url" type="button" class="shrink-0 rounded-lg border border-slate-200 px-3 py-1.5 text-xs font-medium text-slate-600 transition hover:bg-slate-50">コピー</button>
+                </div>
+                <p id="copy-result" aria-live="polite" class="mt-2 min-h-5 text-xs text-emerald-700"></p>
+              </div>
+            </li>
+            <li class="flex gap-4 rounded-2xl bg-slate-50 p-4 sm:p-5">
+              <span class="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-white text-sm font-semibold text-slate-700 shadow-sm">3</span>
+              <div><h3 class="font-medium">デベロッパーモードを有効にする</h3><p class="mt-1 text-sm leading-6 text-slate-600">管理画面の右上にある「デベロッパーモード」をオンにします。</p></div>
+            </li>
+            <li class="flex gap-4 rounded-2xl bg-slate-50 p-4 sm:p-5">
+              <span class="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-white text-sm font-semibold text-slate-700 shadow-sm">4</span>
+              <div><h3 class="font-medium">展開したフォルダを選ぶ</h3><p class="mt-1 text-sm leading-6 text-slate-600">「パッケージ化されていない拡張機能を読み込む」を押し、<code class="rounded bg-slate-200/70 px-1.5 py-0.5 text-xs">manifest.json</code> が入っているフォルダを選びます。</p></div>
+            </li>
+            <li class="flex gap-4 rounded-2xl bg-slate-50 p-4 sm:p-5">
+              <span class="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-white text-sm font-semibold text-slate-700 shadow-sm">5</span>
+              <div><h3 class="font-medium">StudyUsを再読み込みする</h3><p class="mt-1 text-sm leading-6 text-slate-600">このページを閉じてStudyUsを再読み込みすれば、設定完了です。</p></div>
+            </li>
+          </ol>
+        </div>
+      </section>
+
+      <aside class="mt-6 rounded-2xl border border-amber-200 bg-amber-50 px-5 py-4 text-sm leading-6 text-amber-900">
+        <h2 class="font-semibold">フォルダは移動・削除しないでください</h2>
+        <p class="mt-1 text-amber-800">Chromeは展開したフォルダから拡張機能を読み込み続けます。更新版を入れた場合は、管理画面で拡張機能の再読み込みボタンを押してください。</p>
+      </aside>
+
+      <p class="mt-6 text-center text-xs leading-5 text-slate-500">この拡張機能は、閲覧中タブの情報をStudyUsページへ通知するために使用します。音声やカメラ映像にはアクセスしません。</p>
+    </main>
+
+    <script type="module" src="/src/extension-download.js"></script>
+  </body>
+</html>
