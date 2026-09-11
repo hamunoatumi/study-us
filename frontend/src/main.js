@@ -86,7 +86,7 @@ setupHome(
           id: participant.userId,
           name: participant.username,
           status: participant.status,
-          avatarId: avatarId
+          avatarId: avatar.Id
         })
 
         updateParticipants(participants)
