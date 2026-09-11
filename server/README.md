@@ -12,6 +12,16 @@ npm install
 npm run dev
 ```
 
+ローカル用の環境変数は`.env.example`をコピーして設定できる。
+
+```powershell
+Copy-Item .env.example .env
+npm run dev
+```
+
+`.env`は起動時に読み込まれるが、シェルやホスティングサービス側で設定した
+環境変数がある場合はそちらを優先する。実際の`.env`はGitへコミットしない。
+
 - HTTPヘルスチェック: `http://localhost:3000/health`
 - WebSocket: `ws://localhost:3000/ws`
 - 拡張機能ZIP: `http://localhost:3000/extension/download`

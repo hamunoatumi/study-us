@@ -1,4 +1,7 @@
 import { createServer } from 'node:http'
+import { existsSync } from 'node:fs'
+import { loadEnvFile } from 'node:process'
+import { resolve } from 'node:path'
 
 import express from 'express'
 import { WebSocketServer, type WebSocket } from 'ws'
@@ -6,6 +9,11 @@ import { WebSocketServer, type WebSocket } from 'ws'
 import { isOriginAllowed, loadServerConfig } from './config.js'
 import { streamExtensionPackage } from './extension-package.js'
 import { StudyUsRoomServer } from './room-server.js'
+
+const localEnvPath = resolve(process.cwd(), '.env')
+if (existsSync(localEnvPath)) {
+  loadEnvFile(localEnvPath)
+}
 
 const config = loadServerConfig()
 const app = express()
