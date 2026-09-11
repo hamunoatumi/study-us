@@ -1,9 +1,17 @@
 export const STATUS_INFO = {
+  unknown: {
+    label: '判定できません',
+    dotClass: 'bg-slate-400',
+
+    backgroundColor: '#f8fafc',
+    stripeColor: 'rgba(100, 116, 139, 0.2)'
+  },
+
   studying: {
     label: '勉強中',
     dotClass: 'bg-green-500',
     
-    backgroundClass: '#f0fdf4',
+    backgroundColor: '#f0fdf4',
     stripeColor: 'rgba(34, 197, 94, 0.3)'
   },
 

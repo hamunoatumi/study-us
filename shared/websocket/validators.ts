@@ -104,6 +104,9 @@ export function parseClientMessage(value: unknown): ParseResult<ClientToServerMe
     case 'activity.tab':
       valid = isHostname(payload.hostname)
       break
+    case 'activity.monitoring':
+      valid = typeof payload.available === 'boolean'
+      break
     case 'avatar.pose':
       valid = isAvatarPosePayload(payload)
       break

@@ -230,6 +230,23 @@ export function sendActiveTab(
   )
 }
 
+export function sendActivityMonitoring(
+  socket,
+  available
+) {
+  if (socket.readyState !== WebSocket.OPEN) {
+    return
+  }
+
+  sendClientMessage(
+    socket,
+    'activity.monitoring',
+    {
+      available
+    }
+  )
+}
+
 export function sendAvatarPose(
   socket,
   pose
