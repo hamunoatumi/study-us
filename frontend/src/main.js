@@ -5,7 +5,9 @@ import { connectRoom, joinRoom, subscribeRoomEvents, startHeartbeat, leaveRoom }
 import { startTabActivitySync } from './integration/tabActivitySync.js'
 import { startLocalAvatar } from './integration/localAvatar.js'
 import { updatePipAvatarPose } from './pip/pipAvatar.js'
+import { getRandomAvatarPreset } from './features/avatar/avatarPresets.js'
 import { checkStudyUsExtension } from './extension/receiveStudyUsTabInfo.js'
+
 
 let currentSocket = null  // 退出処理で使用
 let currentAvatarController = null  // 退出処理(カメラ、pip)で使用
@@ -24,8 +26,12 @@ setupHome(
   async (username) => {
     const socket = await connectRoom()
 
+    // ランダムアバター作成
+    const avatarPreset = getRandomAvatarPreset()
+    const avatarId = avatarPreset.id
+
     // ルームに参加
-    const snapshot = await joinRoom(socket, username)
+    const snapshot = await joinRoom(socket, username, avatarId)
 
     // 今使っているsocketを退出処理から使えるよう保存
     currentSocket = socket
@@ -38,8 +44,8 @@ setupHome(
     const me = {
       id: snapshot.selfUserId,
       name: username,
-      status: 'unknown',
-      avatarId: 'haru'
+      avatarId,
+      status: 'unknown'
     }
 
     // 他の参加者

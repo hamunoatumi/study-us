@@ -8,3 +8,9 @@ export const avatarPresets: AvatarPreset[] = [
   { id: 'ren', name: 'Ren', hairStyle: 'natural-mash', eyeColor: '#725e98', appearance: { hairColor: '#423941', shirtColor: '#7965a3' } },
   { id: 'sota', name: 'Sota', hairStyle: 'up-bang', eyeColor: '#946430', glasses: true, appearance: { hairColor: '#4d382e', shirtColor: '#bd763c', skinColor: '#d69a75' } },
 ]
+
+export function getRandomAvatarPreset(): AvatarPreset {
+  const randomIndex = Math.floor(Math.random() * avatarPresets.length)
+
+  return avatarPresets[randomIndex]!
+}
