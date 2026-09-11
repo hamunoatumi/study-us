@@ -28,6 +28,7 @@ export type FaceTrackedSvgAvatarControllerOptions = {
 
   // pose取得時に外へ通知
   onPose?: (pose: AvatarPose) => void
+  onTrackingChange?: (faceDetected: boolean) => void
 
   onError?: (error: Error) => void
 }
@@ -50,10 +51,12 @@ export async function createFaceTrackedSvgAvatarController(
       options.renderer
     )
 
-  const tracker =
-    await createFaceTracker(
-      options.faceTracker
-    )
+  const tracker = await createFaceTracker({
+    ...options.faceTracker,
+    ...(options.onTrackingChange === undefined
+      ? {}
+      : { onTrackingChange: options.onTrackingChange }),
+  })
 
   let stopCamera:
     (() => void) | undefined

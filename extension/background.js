@@ -1,8 +1,6 @@
-const STUDYUS_PAGE_PATTERNS = [
-  'http://localhost:5173/*',
-  'http://127.0.0.1:5173/*',
-  "https://steadier-easing-provolone.ngrok-free.dev/*"
-]
+importScripts('config.js')
+
+const studyUsPagePatterns = globalThis.STUDYUS_PAGE_PATTERNS
 
 function createTabPayload(tab) {
   if (!tab.url) return null
@@ -28,7 +26,7 @@ async function notifyStudyUs(tab) {
   const payload = createTabPayload(tab)
   if (!payload) return
 
-  const studyUsTabs = await chrome.tabs.query({ url: STUDYUS_PAGE_PATTERNS })
+  const studyUsTabs = await chrome.tabs.query({ url: studyUsPagePatterns })
 
   await Promise.allSettled(
     studyUsTabs.map(studyUsTab =>
@@ -39,6 +37,17 @@ async function notifyStudyUs(tab) {
     ),
   )
 }
+
+chrome.runtime.onMessage.addListener(message => {
+  if (message?.type !== 'REQUEST_ACTIVE_TAB') return
+
+  chrome.tabs.query({ active: true, currentWindow: true }).then(([activeTab]) => {
+    if (!activeTab) return
+    return notifyStudyUs(activeTab)
+  }).catch(error => {
+    console.error('[StudyUs] Failed to send current tab.', error)
+  })
+})
 
 chrome.tabs.onActivated.addListener(async ({ tabId }) => {
   try {

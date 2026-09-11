@@ -1,5 +1,8 @@
 const MESSAGE_SOURCE = 'studyus-extension'
+const APP_MESSAGE_SOURCE = 'studyus-app'
 const ACTIVE_TAB_CHANGED = 'ACTIVE_TAB_CHANGED'
+const EXTENSION_PING = 'STUDYUS_EXTENSION_PING'
+const EXTENSION_READY = 'STUDYUS_EXTENSION_READY'
 
 function isTabInfo(value) {
   return (
@@ -40,4 +43,47 @@ export function receiveStudyUsTabInfo(onReceive) {
   return function stopReceiving() {
     window.removeEventListener('message', handleMessage)
   }
+}
+
+/**
+ * StudyUs拡張機能が現在のページで動作しているか確認します。
+ *
+ * @param {number} timeoutMs
+ * @returns {Promise<boolean>}
+ */
+export function checkStudyUsExtension(timeoutMs = 500) {
+  return new Promise((resolve) => {
+    let settled = false
+
+    function finish(available) {
+      if (settled) return
+      settled = true
+      clearTimeout(timerId)
+      window.removeEventListener('message', handleMessage)
+      resolve(available)
+    }
+
+    function handleMessage(event) {
+      if (event.source !== window) return
+      if (event.origin !== window.location.origin) return
+      if (event.data?.source !== MESSAGE_SOURCE) return
+      if (event.data?.type !== EXTENSION_READY) return
+
+      finish(true)
+    }
+
+    const timerId = window.setTimeout(
+      () => finish(false),
+      Math.max(0, timeoutMs),
+    )
+
+    window.addEventListener('message', handleMessage)
+    window.postMessage(
+      {
+        source: APP_MESSAGE_SOURCE,
+        type: EXTENSION_PING,
+      },
+      window.location.origin,
+    )
+  })
 }

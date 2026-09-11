@@ -127,6 +127,23 @@ WebSocket接続とユーザーを関連付け、転送時にサーバー側で`u
 
 顔検出状態が変化したときだけ送信する。
 
+### `activity.monitoring`
+
+```json
+{
+  "v": 1,
+  "type": "activity.monitoring",
+  "seq": 6,
+  "sentAt": 1788652804000,
+  "payload": {
+    "available": false
+  }
+}
+```
+
+拡張機能との疎通状態が変化したときだけ送信する。`false`を受け取ったサーバーは
+保持しているホスト名を破棄し、顔を検出できている参加者を`unknown`へ変更する。
+
 ### `heartbeat`
 
 ```json
@@ -147,7 +164,7 @@ WebSocket接続とユーザーを関連付け、転送時にサーバー側で`u
 - `room.snapshot`: 参加直後・再接続時の参加者一覧。
 - `participant.joined`: 参加者の追加。
 - `participant.left`: 参加者の退出。
-- `participant.status`: `studying`、`distracted`、`away`の変更。
+- `participant.status`: `unknown`、`studying`、`distracted`、`away`の変更。
 - `participant.pose`: 他ユーザーのアバター姿勢。
 - `protocol.error`: 不正なメッセージや参加失敗の通知。
 
@@ -174,8 +191,13 @@ BAN対象のホスト名は他の参加者へ配信しない。
 サーバーは次の優先順位で参加状態を決定する。
 
 1. ハートビート切れ、または一定時間顔を検出できない: `away`
-2. BAN対象サイトを表示中: `distracted`
-3. それ以外: `studying`
+2. 拡張機能からタブ情報を取得できない: `unknown`
+3. BAN対象サイトを表示中: `distracted`
+4. それ以外: `studying`
+
+参加直後は`unknown`とする。拡張機能がなくてもルーム参加、カメラ、アバター、
+WebSocket通信は利用できる。拡張機能から最初のタブ情報を受信すると、
+`studying`または`distracted`へ移行する。
 
 ## 受信時の検証
 

@@ -83,7 +83,10 @@ const run = async (): Promise<void> => {
     seq: 0,
     payload: { username: 'Taro', avatarId: 'haru' },
   }))
-  await Promise.all([senderSnapshot, joined])
+  const [, joinedMessage] = await Promise.all([senderSnapshot, joined])
+  if (joinedMessage.payload.status !== 'unknown') {
+    throw new Error('参加直後のステータスがunknownではありません')
+  }
 
   const pose = waitForMessage(observer, 'participant.pose')
   send(sender, envelope({
@@ -112,10 +115,18 @@ const run = async (): Promise<void> => {
   }))
   await distracted
 
+  const unknown = waitForMessage(observer, 'participant.status')
+  send(sender, envelope({
+    type: 'activity.monitoring',
+    seq: 3,
+    payload: { available: false },
+  }))
+  await unknown
+
   const away = waitForMessage(observer, 'participant.status')
   send(sender, envelope({
     type: 'avatar.tracking',
-    seq: 3,
+    seq: 4,
     payload: { faceDetected: false },
   }))
   await away
@@ -123,7 +134,7 @@ const run = async (): Promise<void> => {
   const left = waitForMessage(observer, 'participant.left')
   send(sender, envelope({
     type: 'room.leave',
-    seq: 4,
+    seq: 5,
     payload: {},
   }))
   await left

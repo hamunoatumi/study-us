@@ -46,6 +46,7 @@ export type FaceTrackedAvatarControllerOptions = Omit<
   'poseProvider'
 > & {
   faceTracker?: FaceTrackerOptions
+  onTrackingChange?: (faceDetected: boolean) => void
 }
 
 
@@ -191,10 +192,12 @@ createFaceTrackedAvatarController(
     FaceTrackedAvatarControllerOptions,
 ): Promise<FaceTrackedAvatarController> {
 
-  const faceTracker =
-    await createFaceTracker(
-      options.faceTracker
-    )
+  const faceTracker = await createFaceTracker({
+    ...options.faceTracker,
+    ...(options.onTrackingChange === undefined
+      ? {}
+      : { onTrackingChange: options.onTrackingChange }),
+  })
 
   const controller =
     createAvatarController({
