@@ -12,14 +12,16 @@ npm install
 npm run dev
 ```
 
-ローカル用の環境変数は`.env.example`をコピーして設定できる。
+公開Originはリポジトリ直下の`.env.example`を`.env`へコピーして設定する。
+サーバー固有の設定は`server/.env`で上書きできる。
 
 ```powershell
+Copy-Item ..\.env.example ..\.env
 Copy-Item .env.example .env
 npm run dev
 ```
 
-`.env`は起動時に読み込まれるが、シェルやホスティングサービス側で設定した
+両方の`.env`は起動時に読み込まれるが、シェルやホスティングサービス側で設定した
 環境変数がある場合はそちらを優先する。実際の`.env`はGitへコミットしない。
 
 - HTTPヘルスチェック: `http://localhost:3000/health`
@@ -34,17 +36,23 @@ npm run dev
 | --- | --- | --- |
 | `PORT` | `3000` | HTTP/WebSocketの待受ポート |
 | `WEBSOCKET_PATH` | `/ws` | WebSocketの接続パス |
-| `ALLOWED_ORIGINS` | 未設定 | 接続を許可するフロントのOrigin。複数はカンマ区切り |
+| `PUBLIC_APP_ORIGIN` | 未設定 | 公開したフロントのOrigin。CORSと拡張機能の許可元として使用 |
+| `ALLOWED_ORIGINS` | `PUBLIC_APP_ORIGIN`の値 | 接続を許可するフロントのOrigin。複数はカンマ区切り |
+| `EXTENSION_ALLOWED_ORIGINS` | `ALLOWED_ORIGINS`の値 | 配布ZIP内の拡張機能を動作させるOrigin。複数はカンマ区切り |
 | `BANNED_HOSTNAMES` | `youtube.com` | BAN対象ホスト名。複数はカンマ区切り |
 | `HEARTBEAT_TIMEOUT_MS` | `30000` | 受信が途絶えた参加者を離席にする時間 |
 | `DISCONNECT_TIMEOUT_MS` | `60000` | 受信が途絶えた接続を切断する時間 |
 | `MAX_PARTICIPANTS` | `100` | 同時参加者の上限（最大100） |
 
 `youtube.com`を指定すると、`www.youtube.com`などのサブドメインも対象になる。
-`ALLOWED_ORIGINS`を設定した場合、一覧にないOriginとOriginを持たない接続は拒否する。
+通常は`PUBLIC_APP_ORIGIN`だけを設定する。`ALLOWED_ORIGINS`を設定すると
+CORS設定を上書きでき、一覧にないOriginとOriginを持たない接続は拒否する。
 ローカル開発では未設定にすることで、接続元を制限せずに利用できる。
-拡張機能ZIPの`manifest.json`と`config.js`にも`ALLOWED_ORIGINS`を反映する。
-未設定の場合は`http://localhost:5173`と`http://127.0.0.1:5173`を使用する。
+拡張機能ZIPの`manifest.json`と`config.js`には
+`EXTENSION_ALLOWED_ORIGINS`を反映する。未設定の場合は`ALLOWED_ORIGINS`を使用する。
+どちらも未設定のローカル開発では、localhostと127.0.0.1の全ポートを許可する。
+`VITE_ALLOWED_HOSTS`はVite開発サーバーへのアクセス許可であり、
+拡張機能の許可Originには使用しない。
 URL全体やページタイトルは保存・配信しない。
 アバター姿勢は最新値を保持し、他の参加者への配信を最大15fpsに制限する。
 クライアントへの送信待ちが64 KiB以上の場合は姿勢の配信を省略し、古い姿勢が

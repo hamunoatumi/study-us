@@ -1,7 +1,7 @@
 const nextSeqBySocket = new WeakMap()
 const websocketUrl =
   import.meta.env.VITE_WEBSOCKET_URL?.trim() ||
-  'ws://localhost:3000/ws'
+  `${window.location.protocol === 'https:' ? 'wss:' : 'ws:'}//${window.location.host}/ws`
 
 
 // WebSocketサーバーへ接続
